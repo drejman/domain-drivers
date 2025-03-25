@@ -1,4 +1,3 @@
-from typing import Any
 
 from .graph_elements import Node, Edge
 

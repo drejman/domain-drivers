@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from schedule.graphs import Graph, Node
+from schedule.sorter import Graph, Node
 from .parallel_stages import ParallelStages
 from .parallel_stages_seq import ParallelStagesSequence
 from .stage import Stage

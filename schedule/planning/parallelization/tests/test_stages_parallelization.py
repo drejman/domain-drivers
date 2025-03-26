@@ -1,9 +1,9 @@
-import graphlib
-
 import pytest
 
-from schedule.parallelization.stage import Stage, ResourceName
-from schedule.parallelization.stage_parallelization import StageParallelization
+from schedule.sorter import CycleError
+
+from ..stage import Stage, ResourceName
+from ..stage_parallelization import StageParallelization
 
 
 def test_everything_can_be_done_in_parallel_if_there_are_no_dependencies():
@@ -45,7 +45,7 @@ def test_cant_be_done_when_there_are_circular_dependencies():
     stage2.depends_on(stage1)  # circular dependency
 
     # when
-    with pytest.raises(graphlib.CycleError):
+    with pytest.raises(CycleError):
         StageParallelization().from_stages(stages=[stage1, stage2])
 
 

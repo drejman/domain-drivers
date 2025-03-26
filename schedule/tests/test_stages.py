@@ -1,4 +1,8 @@
-from schedule.parallelization.stage import Stage
+import graphlib
+
+import pytest
+
+from schedule.parallelization.stage import Stage, ResourceName
 from schedule.parallelization.stage_parallelization import StageParallelization
 
 
@@ -41,10 +45,8 @@ def test_cant_be_done_when_there_are_circular_dependencies():
     stage2.depends_on(stage1)  # circular dependency
 
     # when
-    sorted_stages = StageParallelization().from_stages(stages=[stage1, stage2])
-
-    # then
-    assert len(sorted_stages.all) == 0
+    with pytest.raises(graphlib.CycleError):
+        StageParallelization().from_stages(stages=[stage1, stage2])
 
 
 def test_mixed_dependency_levels():
@@ -67,3 +69,25 @@ def test_mixed_dependency_levels():
 
     # then
     assert str(sorted_stages) == "Stage1 | Stage2, Stage3 | Stage4, Stage5"
+
+
+LEON = ResourceName("Leon")
+ERYK = ResourceName("Eryk")
+SLAWEK = ResourceName("Sławek")
+KUBA = ResourceName("Kuba")
+
+
+def test_takes_into_account_shared_resources():
+    stage_1 = Stage("Stage1").with_chosen_resource_capabilities(LEON)
+    stage_2 = Stage("Stage2").with_chosen_resource_capabilities(ERYK, LEON)
+    stage_3 = Stage("Stage3").with_chosen_resource_capabilities(SLAWEK)
+    stage_4 = Stage("Stage4").with_chosen_resource_capabilities(SLAWEK, KUBA)
+
+    parallel_stages = StageParallelization().from_stages(
+        [stage_1, stage_2, stage_3, stage_4]
+    )
+
+    assert str(parallel_stages) in [
+        "Stage1, Stage3 | Stage2, Stage4",
+        "Stage2, Stage4 | Stage1, Stage3",
+    ]

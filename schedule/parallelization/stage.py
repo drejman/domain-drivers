@@ -1,4 +1,5 @@
-from typing import Self
+from __future__ import annotations
+from typing import TypeAlias
 
 import attrs as a
 
@@ -6,22 +7,42 @@ import attrs as a
 @a.define
 class Stage:
     _name: str
-    _dependencies: set[Self] = a.field(factory=set, init=False, eq=False)
+    _dependencies: set[Stage] = a.field(factory=set, eq=False)
+    _resources: set[ResourceName] = a.field(factory=set, eq=False)
 
     @property
     def name(self) -> str:
         return self._name
 
     @property
-    def dependencies(self):
+    def dependencies(self) -> set[Stage]:
         return self._dependencies
 
-    def depends_on(self, stage: Self) -> Self:
+    @property
+    def has_dependencies(self) -> bool:
+        return len(self._dependencies) > 0
+
+    @property
+    def resources(self) -> set[ResourceName]:
+        return self._resources
+
+    @property
+    def count_of_resources(self) -> int:
+        return len(self._resources)
+
+    def depends_on(self, stage: Stage) -> Stage:
         self._dependencies.add(stage)
         return self
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self._name)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._name
+
+    def with_chosen_resource_capabilities(self, *resources: ResourceName) -> Stage:
+        self._resources |= set(resources)
+        return self
+
+
+ResourceName: TypeAlias = str

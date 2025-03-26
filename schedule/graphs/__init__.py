@@ -1,3 +1,4 @@
-from .facade import GraphFacade
+from .graph_elements import Node
+from .graph import Graph
 
-__all__ = ["GraphFacade"]
+__all__ = ["Node", "Graph"]

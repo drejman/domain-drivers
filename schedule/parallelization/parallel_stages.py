@@ -1,11 +1,12 @@
 from operator import attrgetter
+from typing import Iterable
 
 import attrs as a
 
 from .stage import Stage
 
 
-def stages_converter(stages: set[Stage]) -> tuple[Stage, ...]:
+def stages_converter(stages: Iterable[Stage]) -> tuple[Stage, ...]:
     return tuple(sorted(stages, key=attrgetter("name")))
 
 
@@ -13,5 +14,5 @@ def stages_converter(stages: set[Stage]) -> tuple[Stage, ...]:
 class ParallelStages:
     stages: tuple[Stage, ...] = a.field(converter=stages_converter)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return ", ".join([str(stage) for stage in self.stages])

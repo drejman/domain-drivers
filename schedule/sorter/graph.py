@@ -1,10 +1,10 @@
 from graphlib import TopologicalSorter
-from typing import TypeAlias, TypeVar
+from typing import TypeVar
 
 from .node import Node
 
 T = TypeVar("T")
-SortedNodes: TypeAlias = tuple[tuple[Node[T], ...], ...]
+type SortedNodes[T] = tuple[tuple[Node[T], ...], ...]
 
 
 class Graph[T]:
@@ -15,7 +15,7 @@ class Graph[T]:
         self.nodes[node] = self.nodes.get(node, set()).union(node.predecessors)
 
     def topological_sort(self) -> SortedNodes[T]:
-        nodes = []
+        nodes: list[tuple[Node[T], ...]] = []
 
         ts = TopologicalSorter(self.nodes)
         ts.prepare()

@@ -1,9 +1,13 @@
 from __future__ import annotations
-from typing import Sequence
+
+from typing import TYPE_CHECKING
 
 import attrs as a
 
-from .parallel_stages import ParallelStages
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+    from .parallel_stages import ParallelStages
 
 
 def convert_all(all_: Sequence[ParallelStages]) -> tuple[ParallelStages, ...]:

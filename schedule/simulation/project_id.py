@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from uuid import UUID, uuid4
+
 import attrs as a
 
 
@@ -11,3 +12,6 @@ class ProjectId:
     @staticmethod
     def new() -> ProjectId:
         return ProjectId()
+
+    def __str__(self) -> str:
+        return str(self._project_id)

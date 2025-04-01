@@ -1,5 +1,5 @@
+from collections.abc import Iterable
 from operator import attrgetter
-from typing import Iterable
 
 import attrs as a
 

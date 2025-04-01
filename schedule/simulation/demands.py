@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-from typing import Iterable
+from typing import TYPE_CHECKING
 
 import attrs as a
 
-from .demand import Demand
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+    from .demand import Demand
 
 
 def iterable_to_frozenset(demands: Iterable[Demand]) -> frozenset[Demand]:

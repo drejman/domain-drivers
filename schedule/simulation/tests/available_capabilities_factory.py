@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import timezone
+from datetime import UTC
 
 import factory  # type: ignore
 
@@ -15,7 +15,7 @@ class AvailableResourceCapabilityFactory(factory.Factory):  # type: ignore
         model = AvailableResourceCapability
 
     resource_id = factory.Faker("uuid4")
-    time_slot = factory.Faker("date_time_this_year", tzinfo=timezone.utc)
+    time_slot = factory.Faker("date_time_this_year", tzinfo=UTC)
 
 
 class SimulatedCapabilitiesFactory(factory.Factory):  # type: ignore

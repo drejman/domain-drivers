@@ -2,11 +2,11 @@ import pytest
 
 from schedule.sorter import CycleError
 
-from ..stage import Stage, ResourceName
+from ..stage import ResourceName, Stage
 from ..stage_parallelization import StageParallelization
 
 
-def test_everything_can_be_done_in_parallel_if_there_are_no_dependencies():
+def test_everything_can_be_done_in_parallel_if_there_are_no_dependencies() -> None:
     # given
     stage1 = Stage("Stage1")
     stage2 = Stage("Stage2")
@@ -18,7 +18,7 @@ def test_everything_can_be_done_in_parallel_if_there_are_no_dependencies():
     assert len(sorted_stages.all) == 1
 
 
-def test_simple_dependencies():
+def test_simple_dependencies() -> None:
     # given
     stage1 = Stage(name="Stage1")
     stage2 = Stage(name="Stage2")
@@ -29,15 +29,13 @@ def test_simple_dependencies():
     stage4.depends_on(stage2)
 
     # when
-    sorted_stages = StageParallelization().from_stages(
-        stages=[stage1, stage2, stage3, stage4]
-    )
+    sorted_stages = StageParallelization().from_stages(stages=[stage1, stage2, stage3, stage4])
 
     # then
     assert str(sorted_stages) == "Stage1 | Stage2, Stage3 | Stage4"
 
 
-def test_cant_be_done_when_there_are_circular_dependencies():
+def test_cant_be_done_when_there_are_circular_dependencies() -> None:
     # given
     stage1 = Stage(name="Stage1")
     stage2 = Stage(name="Stage2")
@@ -49,7 +47,7 @@ def test_cant_be_done_when_there_are_circular_dependencies():
         StageParallelization().from_stages(stages=[stage1, stage2])
 
 
-def test_mixed_dependency_levels():
+def test_mixed_dependency_levels() -> None:
     # given
     stage1 = Stage(name="Stage1")
     stage2 = Stage(name="Stage2")
@@ -63,9 +61,7 @@ def test_mixed_dependency_levels():
     stage5.depends_on(stage3)
 
     # when
-    sorted_stages = StageParallelization().from_stages(
-        stages=[stage1, stage2, stage3, stage4, stage5]
-    )
+    sorted_stages = StageParallelization().from_stages(stages=[stage1, stage2, stage3, stage4, stage5])
 
     # then
     assert str(sorted_stages) == "Stage1 | Stage2, Stage3 | Stage4, Stage5"
@@ -77,15 +73,13 @@ SLAWEK = ResourceName("Sławek")
 KUBA = ResourceName("Kuba")
 
 
-def test_takes_into_account_shared_resources():
+def test_takes_into_account_shared_resources() -> None:
     stage_1 = Stage("Stage1").with_chosen_resource_capabilities(LEON)
     stage_2 = Stage("Stage2").with_chosen_resource_capabilities(ERYK, LEON)
     stage_3 = Stage("Stage3").with_chosen_resource_capabilities(SLAWEK)
     stage_4 = Stage("Stage4").with_chosen_resource_capabilities(SLAWEK, KUBA)
 
-    parallel_stages = StageParallelization().from_stages(
-        [stage_1, stage_2, stage_3, stage_4]
-    )
+    parallel_stages = StageParallelization().from_stages([stage_1, stage_2, stage_3, stage_4])
 
     assert str(parallel_stages) in [
         "Stage1, Stage3 | Stage2, Stage4",

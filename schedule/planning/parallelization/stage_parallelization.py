@@ -1,6 +1,7 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from schedule.sorter import Graph, Node
+
 from .parallel_stages import ParallelStages
 from .parallel_stages_seq import ParallelStagesSequence
 from .stage import Stage
@@ -8,39 +9,27 @@ from .stage import Stage
 
 class StageParallelization:
     def from_stages(self, stages: Sequence[Stage]) -> ParallelStagesSequence:
-        temporary_graph: dict[str, Node[Stage]] = {
-            stage.name: Node(name=stage.name, content=stage) for stage in stages
-        }
+        temporary_graph: dict[str, Node[Stage]] = {stage.name: Node(name=stage.name, content=stage) for stage in stages}
         graph: Graph[Stage] = Graph()
 
         for i, stage in enumerate(stages):
             self._map_explicit_dependencies(stage, temporary_graph)
-            self._map_shared_resources_dependencies(
-                stage, stages[i + 1 :], temporary_graph
-            )
+            self._map_shared_resources_dependencies(stage, stages[i + 1 :], temporary_graph)
 
         for node in temporary_graph.values():
             graph.add_node(node)
 
         sorted_nodes = graph.topological_sort()
 
-        return ParallelStagesSequence(
-            [ParallelStages(node.content for node in level) for level in sorted_nodes]
-        )
+        return ParallelStagesSequence([ParallelStages(node.content for node in level) for level in sorted_nodes])
 
-    def _map_explicit_dependencies(
-        self, stage: Stage, temporary_graph: dict[str, Node[Stage]]
-    ) -> None:
+    def _map_explicit_dependencies(self, stage: Stage, temporary_graph: dict[str, Node[Stage]]) -> None:
         if not stage.has_dependencies:
             return
         node = temporary_graph[stage.name]
         dependency_names = {dep.name for dep in stage.dependencies}
         temporary_graph[stage.name] = node.add_predecessors(
-            *{
-                node
-                for node in temporary_graph.values()
-                if node.name in dependency_names
-            }
+            *{node for node in temporary_graph.values() if node.name in dependency_names}
         )
 
     def _map_shared_resources_dependencies(

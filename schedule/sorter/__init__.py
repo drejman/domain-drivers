@@ -1,5 +1,6 @@
 from graphlib import CycleError
-from .node import Node
-from .graph import Graph
 
-__all__ = ["CycleError", "Node", "Graph"]
+from .graph import Graph
+from .node import Node
+
+__all__ = ["CycleError", "Graph", "Node"]

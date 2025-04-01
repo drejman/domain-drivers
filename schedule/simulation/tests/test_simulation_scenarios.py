@@ -3,6 +3,7 @@ from uuid import UUID, uuid4
 
 import pytest
 
+from ...optimization.optimization_facade import OptimizationFacade
 from ..capability import Capability
 from ..demand import Demand
 from ..demands import Demands
@@ -18,42 +19,41 @@ from .simulated_projects_factory import (
 )
 
 
-@pytest.fixture()
+@pytest.fixture
 def jan_1_time_slot() -> TimeSlot:
     return TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
 
 
-@pytest.fixture()
+@pytest.fixture
 def project_1_id() -> ProjectId:
     return ProjectId.new()
 
 
-@pytest.fixture()
+@pytest.fixture
 def project_2_id() -> ProjectId:
     return ProjectId.new()
 
 
-@pytest.fixture()
+@pytest.fixture
 def project_3_id() -> ProjectId:
     return ProjectId.new()
 
 
-@pytest.fixture()
+@pytest.fixture
 def staszek_id() -> UUID:
     return uuid4()
 
 
-@pytest.fixture()
+@pytest.fixture
 def leon_id() -> UUID:
     return uuid4()
 
 
-@pytest.fixture()
+@pytest.fixture
 def simulation_facade() -> SimulationFacade:
-    return SimulationFacade()
+    return SimulationFacade(optimization_facade=OptimizationFacade())
 
 
-@pytest.mark.xfail(reason="Not implemented yet", strict=True)
 class TestSimulationScenarios:
     def test_picks_optimal_project_based_on_earnings(
         self,
@@ -69,23 +69,17 @@ class TestSimulationScenarios:
             SimulatedProjectFactory.build(
                 project_id=project_1_id,
                 earnings=Decimal(9),
-                missing_demands=Demands(
-                    [Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]
-                ),
+                missing_demands=Demands([Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]),
             ),
             SimulatedProjectFactory.build(
                 project_id=project_2_id,
                 earnings=Decimal(99),
-                missing_demands=Demands(
-                    [Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]
-                ),
+                missing_demands=Demands([Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]),
             ),
             SimulatedProjectFactory.build(
                 project_id=project_3_id,
                 earnings=Decimal(2),
-                missing_demands=Demands(
-                    [Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]
-                ),
+                missing_demands=Demands([Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]),
             ),
         ]
 
@@ -116,9 +110,7 @@ class TestSimulationScenarios:
             SimulatedProjectFactory.build(
                 project_id=project_1_id,
                 earnings=Decimal(99),
-                missing_demands=Demands(
-                    [Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]
-                ),
+                missing_demands=Demands([Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]),
             ),
         ]
 
@@ -151,24 +143,12 @@ class TestSimulationScenarios:
             SimulatedProjectFactory.build(
                 project_id=project_1_id,
                 earnings=Decimal(9),
-                missing_demands=Demands(
-                    [
-                        Demand.demand_for(
-                            Capability.skill("YT DRAMA COMMENTS"), jan_1_time_slot
-                        )
-                    ]
-                ),
+                missing_demands=Demands([Demand.demand_for(Capability.skill("YT DRAMA COMMENTS"), jan_1_time_slot)]),
             ),
             SimulatedProjectFactory.build(
                 project_id=project_2_id,
                 earnings=Decimal(99),
-                missing_demands=Demands(
-                    [
-                        Demand.demand_for(
-                            Capability.skill("YT DRAMA COMMENTS"), jan_1_time_slot
-                        )
-                    ]
-                ),
+                missing_demands=Demands([Demand.demand_for(Capability.skill("YT DRAMA COMMENTS"), jan_1_time_slot)]),
             ),
         ]
 
@@ -185,11 +165,15 @@ class TestSimulationScenarios:
             time_slot=jan_1_time_slot,
         )
 
-        result_without_extra_resource = simulation_facade.which_project_with_missing_demands_is_most_profitable_to_allocate_resources_to(
-            simulated_projects, simulated_availability
+        result_without_extra_resource = (
+            simulation_facade.which_project_with_missing_demands_is_most_profitable_to_allocate_resources_to(
+                simulated_projects, simulated_availability
+            )
         )
-        result_with_extra_resource = simulation_facade.which_project_with_missing_demands_is_most_profitable_to_allocate_resources_to(
-            simulated_projects, simulated_availability.add(extra_capability)
+        result_with_extra_resource = (
+            simulation_facade.which_project_with_missing_demands_is_most_profitable_to_allocate_resources_to(
+                simulated_projects, simulated_availability.add(extra_capability)
+            )
         )
 
         assert result_without_extra_resource.profit == 99

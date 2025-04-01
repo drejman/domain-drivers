@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import TypeAlias
 
 import attrs as a
 
@@ -45,4 +44,4 @@ class Stage:
         return self
 
 
-ResourceName: TypeAlias = str
+ResourceName = str

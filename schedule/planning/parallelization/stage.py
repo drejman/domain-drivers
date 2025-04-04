@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import override
+
 import attrs as a
 
 
@@ -33,9 +35,11 @@ class Stage:
         self._dependencies.add(stage)
         return self
 
+    @override
     def __hash__(self) -> int:
         return hash(self._name)
 
+    @override
     def __str__(self) -> str:
         return self._name
 

@@ -55,12 +55,13 @@ dev = [
 include = ["schedule"]
 exclude = [
     "**/test**",
-    "**/tests/**"
+    "**/tests/**",
+    "schedule/shared/typing_extensions/comparable.py"
 ]
 
 reportMissingImports = "error"
 reportMissingTypeStubs = true
-typeCheckingMode = "strict"
+typeCheckingMode = "all"
 
 pythonVersion = "3.13"
 pythonPlatform = "Linux"

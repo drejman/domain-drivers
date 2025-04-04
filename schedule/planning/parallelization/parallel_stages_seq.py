@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 import attrs as a
 
@@ -26,5 +26,6 @@ class ParallelStagesSequence:
     def all(self) -> tuple[ParallelStages, ...]:
         return self._all
 
+    @override
     def __str__(self) -> str:
         return " | ".join([str(parallel_stages) for parallel_stages in self._all])

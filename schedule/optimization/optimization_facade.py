@@ -9,8 +9,8 @@ from .result import OptimizationResult
 from .total_capacity import TotalCapacity
 
 
-class OptimizationFacade[T: CapacityDimension]:
-    def calculate(
+class OptimizationFacade:
+    def calculate[T: CapacityDimension](
         self,
         items: list[Item[T]],
         total_capacity: TotalCapacity[T],
@@ -20,5 +20,5 @@ class OptimizationFacade[T: CapacityDimension]:
         return DpOptimization[T]().calculate(items, total_capacity, sort_key_getter)
 
     @staticmethod
-    def default_loss_function(x: Item[T]) -> Comparable:
+    def default_loss_function[T: CapacityDimension](x: Item[T]) -> Comparable:
         return -x.value

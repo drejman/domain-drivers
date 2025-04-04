@@ -1,5 +1,6 @@
 from collections.abc import Iterable
 from operator import attrgetter
+from typing import override
 
 import attrs as a
 
@@ -14,5 +15,6 @@ def stages_converter(stages: Iterable[Stage]) -> tuple[Stage, ...]:
 class ParallelStages:
     stages: tuple[Stage, ...] = a.field(converter=stages_converter)
 
+    @override
     def __str__(self) -> str:
         return ", ".join([str(stage) for stage in self.stages])

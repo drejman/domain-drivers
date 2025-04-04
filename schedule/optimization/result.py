@@ -1,3 +1,5 @@
+from typing import override
+
 import attrs as a
 
 from .capacity_dimension import CapacityDimension
@@ -10,5 +12,6 @@ class OptimizationResult[T: CapacityDimension]:
     chosen_items: list[Item[T]]
     item_to_capacities: dict[Item[T], set[T]]
 
+    @override
     def __str__(self) -> str:
         return f"Result{{profit={self.profit}, chosen_items={self.chosen_items}}}"

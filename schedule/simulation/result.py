@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from decimal import Decimal
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 import attrs as a
 from frozendict import frozendict
@@ -42,5 +42,6 @@ class SimulationResult:
             ),
         )
 
+    @override
     def __str__(self) -> str:
         return f"Result{{profit={self.profit}, items={self.chosen_projects}}}"

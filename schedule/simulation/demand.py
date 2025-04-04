@@ -4,17 +4,14 @@ from typing import TYPE_CHECKING
 
 import attrs as a
 
-from schedule.optimization.weight_dimension import WeightDimension
-
-from .available_resource_capability import AvailableResourceCapability
-
 if TYPE_CHECKING:
+    from .available_resource_capability import AvailableResourceCapability
     from .capability import Capability
     from .time_slot import TimeSlot
 
 
 @a.define(frozen=True)
-class Demand(WeightDimension[AvailableResourceCapability]):
+class Demand:
     _capability: Capability
     _slot: TimeSlot
 

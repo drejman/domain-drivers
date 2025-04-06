@@ -1,7 +1,4 @@
-from schedule.optimization.item import Item
-from schedule.optimization.optimization_facade import OptimizationFacade
-from schedule.optimization.total_capacity import TotalCapacity
-from schedule.optimization.total_weight import TotalWeight
+from schedule.optimization import Item, OptimizationFacade, TotalCapacity, TotalWeight
 
 from .available_resource_capability import AvailableResourceCapability
 from .result import SimulationResult

@@ -1,0 +1,40 @@
+exclude = [
+    "**/*__pycache__",
+    "**/*egg-info",
+    "**/docs",
+    "**/tests",
+    "**/venv",
+]
+source_roots = [
+    ".",
+]
+forbid_circular_dependencies = true
+
+[[modules ]]
+path = "schedule.sorter"
+depends_on = []
+
+[[interfaces]]
+expose = ["Graph", "Node"]
+from = ["schedule.sorter"]
+
+[[modules ]]
+path = "schedule.simulation"
+depends_on = ["schedule.optimization"]
+
+[[modules ]]
+path = "schedule.planning"
+depends_on = ["schedule.sorter"]
+
+[[modules ]]
+path = "schedule.optimization"
+depends_on = []
+
+[[interfaces]]
+expose = ["Item", "OptimizationFacade", "TotalCapacity", "TotalWeight"]
+from = ["schedule.optimization"]
+
+[[modules ]]
+path = "schedule.shared"
+depends_on = []
+utility = true

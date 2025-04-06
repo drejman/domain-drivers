@@ -3,7 +3,8 @@ from uuid import UUID, uuid4
 
 import pytest
 
-from ...optimization.optimization_facade import OptimizationFacade
+from schedule.optimization.optimization_facade import OptimizationFacade
+
 from ..capability import Capability
 from ..demand import Demand
 from ..demands import Demands

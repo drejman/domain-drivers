@@ -1,3 +1,5 @@
+from collections.abc import Iterable
+
 from schedule.optimization import Item, OptimizationFacade, TotalCapacity, TotalWeight
 
 from .available_resource_capability import AvailableResourceCapability
@@ -12,7 +14,7 @@ class SimulationFacade:
 
     def which_project_with_missing_demands_is_most_profitable_to_allocate_resources_to(
         self,
-        projects_simulations: list[SimulatedProject],
+        projects_simulations: Iterable[SimulatedProject],
         total_capability: SimulatedCapabilities,
     ) -> SimulationResult:
         result = self._optimization_facade.calculate(
@@ -25,7 +27,7 @@ class SimulationFacade:
     def _to_capacity(self, total_capability: SimulatedCapabilities) -> TotalCapacity[AvailableResourceCapability]:
         return TotalCapacity(list(total_capability.capabilities))
 
-    def _to_items(self, projects_simulations: list[SimulatedProject]) -> list[Item[AvailableResourceCapability]]:
+    def _to_items(self, projects_simulations: Iterable[SimulatedProject]) -> list[Item[AvailableResourceCapability]]:
         return [self._to_item(project) for project in projects_simulations]
 
     def _to_item(self, project: SimulatedProject) -> Item[AvailableResourceCapability]:

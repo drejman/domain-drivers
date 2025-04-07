@@ -17,10 +17,14 @@ if TYPE_CHECKING:
     from .simulated_project import SimulatedProject
 
 
+def freeze_projects(project: Iterable[SimulatedProject]) -> frozenset[SimulatedProject]:
+    return frozenset(project)
+
+
 @a.define(frozen=True)
 class SimulationResult:
     profit: Decimal
-    chosen_projects: frozenset[SimulatedProject]
+    chosen_projects: frozenset[SimulatedProject] = a.field(converter=freeze_projects)
     resources_allocated_to_projects: frozendict[SimulatedProject, frozenset[AvailableResourceCapability]]
 
     @classmethod
@@ -30,7 +34,7 @@ class SimulationResult:
         simulated_projects: Iterable[SimulatedProject],
     ) -> SimulationResult:
         simulated_projects_lookup = {project.project_id: project for project in simulated_projects}
-        chosen_projects = frozenset(simulated_projects_lookup[item.name] for item in optimization_result.chosen_items)
+        chosen_projects = [simulated_projects_lookup[item.name] for item in optimization_result.chosen_items]
         return cls(
             profit=Decimal(optimization_result.profit),
             chosen_projects=chosen_projects,

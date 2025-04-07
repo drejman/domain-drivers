@@ -33,7 +33,7 @@ class DpOptimization[T: CapacityDimension]:
                 item.total_weight,
                 all_capacities,
             )
-            all_capacities = [capacity for capacity in all_capacities if capacity not in chosen_capacities]
+            all_capacities = tuple(capacity for capacity in all_capacities if capacity not in chosen_capacities)
 
             if not chosen_capacities:
                 continue

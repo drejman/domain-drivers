@@ -10,13 +10,13 @@ if TYPE_CHECKING:
     from .demand import Demand
 
 
-def iterable_to_frozenset(demands: Iterable[Demand]) -> frozenset[Demand]:
+def freeze_demands(demands: Iterable[Demand]) -> frozenset[Demand]:
     return frozenset(demands)
 
 
 @a.define(frozen=True)
 class Demands:
-    all: frozenset[Demand] = a.field(converter=iterable_to_frozenset)
+    all: frozenset[Demand] = a.field(converter=freeze_demands)
 
     @classmethod
     def of(cls, demands: Iterable[Demand]) -> Demands:

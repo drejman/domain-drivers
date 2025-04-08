@@ -71,17 +71,17 @@ class TestSimulationScenarios:
         simulated_projects = [
             SimulatedProjectFactory.build(
                 project_id=project_1_id,
-                earnings=Decimal(9),
+                value=Decimal(9),
                 missing_demands=Demands([Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]),
             ),
             SimulatedProjectFactory.build(
                 project_id=project_2_id,
-                earnings=Decimal(99),
+                value=Decimal(99),
                 missing_demands=Demands([Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]),
             ),
             SimulatedProjectFactory.build(
                 project_id=project_3_id,
-                earnings=Decimal(2),
+                value=Decimal(2),
                 missing_demands=Demands([Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]),
             ),
         ]
@@ -110,7 +110,7 @@ class TestSimulationScenarios:
         simulated_projects = [
             SimulatedProjectFactory.build(
                 project_id=project_1_id,
-                earnings=Decimal(99),
+                value=Decimal(99),
                 missing_demands=Demands([Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]),
             ),
         ]
@@ -141,12 +141,12 @@ class TestSimulationScenarios:
         simulated_projects = [
             SimulatedProjectFactory.build(
                 project_id=project_1_id,
-                earnings=Decimal(9),
+                value=Decimal(9),
                 missing_demands=Demands([Demand.demand_for(Capability.skill("YT DRAMA COMMENTS"), jan_1_time_slot)]),
             ),
             SimulatedProjectFactory.build(
                 project_id=project_2_id,
-                earnings=Decimal(99),
+                value=Decimal(99),
                 missing_demands=Demands([Demand.demand_for(Capability.skill("YT DRAMA COMMENTS"), jan_1_time_slot)]),
             ),
         ]
@@ -185,12 +185,12 @@ class TestSimulationScenarios:
         simulated_projects = [
             SimulatedProjectFactory.build(
                 project_id=project_1_id,
-                earnings=Decimal(100),
+                value=Decimal(100),
                 missing_demands=Demands([Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]),
             ),
             SimulatedProjectFactory.build(
                 project_id=project_2_id,
-                earnings=Decimal(40),
+                value=Decimal(40),
                 missing_demands=Demands([Demand.demand_for(Capability.skill("JAVA-MID"), jan_1_time_slot)]),
             ),
         ]

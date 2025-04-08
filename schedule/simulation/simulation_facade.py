@@ -22,7 +22,7 @@ class SimulationFacade:
         result = self._optimization_facade.calculate(
             items=self._to_items(projects_simulations),
             total_capacity=self._to_capacity(total_capability),
-            loss_function=lambda x: -x.value,
+            sort_key_getter=lambda x: -x.value,
         )
         return SimulationResult.from_optimization(optimization_result=result, simulated_projects=projects_simulations)
 
@@ -51,7 +51,7 @@ class SimulationFacade:
     def _to_item(self, project: SimulatedProject) -> Item[AvailableResourceCapability]:
         return Item(
             project.project_id,
-            float(project.earnings),
+            float(project.value),
             TotalWeight[AvailableResourceCapability].of(*project.missing_demands.all),
         )
 

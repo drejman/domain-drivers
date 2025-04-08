@@ -14,9 +14,9 @@ class OptimizationFacade:
         self,
         items: list[Item[T]],
         total_capacity: TotalCapacity[T],
-        loss_function: Callable[[Item[T]], Comparable] | None = None,
+        sort_key_getter: Callable[[Item[T]], Comparable] | None = None,
     ) -> OptimizationResult[T]:
-        sort_key_getter = loss_function or self.default_loss_function
+        sort_key_getter = sort_key_getter or self.default_loss_function
         return DpOptimization[T]().calculate(items, total_capacity, sort_key_getter)
 
     @staticmethod

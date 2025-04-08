@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 from typing import TYPE_CHECKING
 
 import attrs as a
@@ -11,6 +12,7 @@ from schedule.simulation import ProjectId, SimulatedProject
 from .allocated_capability import AllocatedCapability
 
 if TYPE_CHECKING:
+    from decimal import Decimal
     from uuid import UUID
 
     from schedule.shared.timeslot import TimeSlot
@@ -41,8 +43,17 @@ class Projects:
     def to_simulated_projects(self) -> list[SimulatedProject]:
         result: list[SimulatedProject] = []
 
+        def value_getter(earnings: Decimal) -> Decimal:
+            return earnings
+
         for project_id, project in self._projects.items():
-            result.append(SimulatedProject(ProjectId(project_id), project.earnings, self._get_missing_demands(project)))
+            result.append(
+                SimulatedProject(
+                    ProjectId(project_id),
+                    functools.partial(value_getter, project.earnings),
+                    self._get_missing_demands(project),
+                )
+            )
 
         return result
 

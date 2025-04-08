@@ -23,3 +23,7 @@ class SimulatedCapabilities:
     def add(self, *new_capabilities: AvailableResourceCapability) -> SimulatedCapabilities:
         new_availabilities = list(self.capabilities) + list(new_capabilities)
         return SimulatedCapabilities(new_availabilities)
+
+    @classmethod
+    def none(cls) -> SimulatedCapabilities:
+        return cls([])

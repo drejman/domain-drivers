@@ -5,9 +5,10 @@ from typing import TYPE_CHECKING
 import attrs as a
 
 if TYPE_CHECKING:
+    from schedule.shared.timeslot import TimeSlot
+
     from .available_resource_capability import AvailableResourceCapability
     from .capability import Capability
-    from .time_slot import TimeSlot
 
 
 @a.define(frozen=True)

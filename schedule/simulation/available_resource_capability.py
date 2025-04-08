@@ -2,8 +2,9 @@ from uuid import UUID
 
 import attrs as a
 
+from schedule.shared.timeslot import TimeSlot
+
 from .capability import Capability
-from .time_slot import TimeSlot
 
 
 @a.define(frozen=True)

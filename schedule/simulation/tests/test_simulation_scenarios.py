@@ -5,6 +5,7 @@ import pytest
 
 from schedule.optimization.optimization_facade import OptimizationFacade
 
+from ...shared.timeslot import TimeSlot
 from ..additional_priced_capability import AdditionalPricedCapability
 from ..available_resource_capability import AvailableResourceCapability
 from ..capability import Capability
@@ -12,7 +13,6 @@ from ..demand import Demand
 from ..demands import Demands
 from ..project_id import ProjectId
 from ..simulation_facade import SimulationFacade
-from ..time_slot import TimeSlot
 from .available_capabilities_factory import (
     AvailableResourceCapabilityFactory,
     SimulatedCapabilitiesFactory,
@@ -96,9 +96,7 @@ class TestSimulationScenarios:
             capabilities__1__time_slot=jan_1_time_slot,
         )
 
-        result = simulation_facade.which_project_with_missing_demands_is_most_profitable_to_allocate_resources_to(
-            simulated_projects, simulated_availability
-        )
+        result = simulation_facade.what_is_the_optimal_setup(simulated_projects, simulated_availability)
 
         assert result.profit == 108
         assert len(result.chosen_projects) == 2
@@ -127,9 +125,7 @@ class TestSimulationScenarios:
             capabilities__1__time_slot=jan_1_time_slot,
         )
 
-        result = simulation_facade.which_project_with_missing_demands_is_most_profitable_to_allocate_resources_to(
-            simulated_projects, simulated_availability
-        )
+        result = simulation_facade.what_is_the_optimal_setup(simulated_projects, simulated_availability)
 
         assert result.profit == 99
         assert len(result.chosen_projects) == 1
@@ -168,15 +164,11 @@ class TestSimulationScenarios:
             time_slot=jan_1_time_slot,
         )
 
-        result_without_extra_resource = (
-            simulation_facade.which_project_with_missing_demands_is_most_profitable_to_allocate_resources_to(
-                simulated_projects, simulated_availability
-            )
+        result_without_extra_resource = simulation_facade.what_is_the_optimal_setup(
+            simulated_projects, simulated_availability
         )
-        result_with_extra_resource = (
-            simulation_facade.which_project_with_missing_demands_is_most_profitable_to_allocate_resources_to(
-                simulated_projects, simulated_availability.add(extra_capability)
-            )
+        result_with_extra_resource = simulation_facade.what_is_the_optimal_setup(
+            simulated_projects, simulated_availability.add(extra_capability)
         )
 
         assert result_without_extra_resource.profit == 99

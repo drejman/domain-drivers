@@ -13,9 +13,9 @@ if TYPE_CHECKING:
 
 
 def freeze_allocated_capabilites(
-    allocated_capabilites: Iterable[AllocatedCapability],
+    allocated_capabilities: Iterable[AllocatedCapability],
 ) -> frozenset[AllocatedCapability]:
-    return frozenset(allocated_capabilites)
+    return frozenset(allocated_capabilities)
 
 
 @a.define(frozen=True)

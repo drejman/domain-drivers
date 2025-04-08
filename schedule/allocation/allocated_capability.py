@@ -7,8 +7,8 @@ import attrs as a
 if TYPE_CHECKING:
     from uuid import UUID
 
+    from schedule.shared.capability import Capability
     from schedule.shared.timeslot import TimeSlot
-    from schedule.simulation import Capability
 
 
 @a.define(frozen=True)

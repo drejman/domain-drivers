@@ -22,9 +22,17 @@ from = ["schedule.sorter"]
 path = "schedule.simulation"
 depends_on = ["schedule.optimization"]
 
+[[interfaces]]
+expose = ["Demand", "Demands", "ProjectId", "SimulatedCapabilities", "SimulationFacade", "SimulatedProject"]
+from = ["schedule.simulation"]
+
 [[modules ]]
 path = "schedule.planning"
 depends_on = ["schedule.sorter"]
+
+[[interfaces]]
+expose = []
+from = ["schedule.planning"]
 
 [[modules ]]
 path = "schedule.optimization"
@@ -38,3 +46,7 @@ from = ["schedule.optimization"]
 path = "schedule.shared"
 depends_on = []
 utility = true
+
+[[modules ]]
+path = "schedule.allocation"
+depends_on = ["schedule.simulation"]

@@ -5,8 +5,8 @@ from uuid import UUID, uuid4
 import pytest
 
 from schedule.optimization.optimization_facade import OptimizationFacade
+from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
-from schedule.simulation.capability import Capability
 from schedule.simulation.simulation_facade import SimulationFacade
 
 from ..allocated_capability import AllocatedCapability

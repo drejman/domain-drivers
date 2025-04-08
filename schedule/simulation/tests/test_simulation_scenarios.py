@@ -4,11 +4,11 @@ from uuid import UUID, uuid4
 import pytest
 
 from schedule.optimization.optimization_facade import OptimizationFacade
+from schedule.shared.capability.capability import Capability
 
 from ...shared.timeslot import TimeSlot
 from ..additional_priced_capability import AdditionalPricedCapability
 from ..available_resource_capability import AvailableResourceCapability
-from ..capability import Capability
 from ..demand import Demand
 from ..demands import Demands
 from ..project_id import ProjectId

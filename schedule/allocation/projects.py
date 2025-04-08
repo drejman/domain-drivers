@@ -4,10 +4,9 @@ from typing import TYPE_CHECKING
 
 import attrs as a
 
-from schedule.simulation.demand import Demand as SimulationDemand
-from schedule.simulation.demands import Demands as SimulationDemands
-from schedule.simulation.project_id import ProjectId
-from schedule.simulation.simulated_project import SimulatedProject
+from schedule.simulation import Demand as SimulationDemand
+from schedule.simulation import Demands as SimulationDemands
+from schedule.simulation import ProjectId, SimulatedProject
 
 from .allocated_capability import AllocatedCapability
 

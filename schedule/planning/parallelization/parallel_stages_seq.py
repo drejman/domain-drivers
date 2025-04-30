@@ -1,16 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, override
+from collections.abc import Iterable
+from typing import override
 
 import attrs as a
 
-if TYPE_CHECKING:
-    from collections.abc import Sequence
-
-    from .parallel_stages import ParallelStages
+from .parallel_stages import ParallelStages
 
 
-def convert_all(all_: Sequence[ParallelStages]) -> tuple[ParallelStages, ...]:
+def convert_all(all_: Iterable[ParallelStages]) -> tuple[ParallelStages, ...]:
     return tuple(all_)
 
 
@@ -18,8 +16,12 @@ def convert_all(all_: Sequence[ParallelStages]) -> tuple[ParallelStages, ...]:
 class ParallelStagesSequence:
     _all: tuple[ParallelStages, ...] = a.field(factory=tuple, converter=convert_all)
 
-    @classmethod
-    def empty(cls) -> ParallelStagesSequence:
+    @staticmethod
+    def of(*stages: ParallelStages) -> ParallelStagesSequence:
+        return ParallelStagesSequence(stages)
+
+    @staticmethod
+    def empty() -> ParallelStagesSequence:
         return ParallelStagesSequence()
 
     @property

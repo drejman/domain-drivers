@@ -11,6 +11,10 @@ class TimeSlot:
     from_: datetime
     to: datetime
 
+    @staticmethod
+    def empty() -> TimeSlot:
+        return TimeSlot(datetime.min, datetime.min)
+
     @classmethod
     def create_daily_time_slot_at_utc(cls, year: int, month: int, day: int) -> TimeSlot:
         this_day = date(year, month, day)

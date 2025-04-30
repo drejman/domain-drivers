@@ -1,15 +1,19 @@
 from __future__ import annotations
 
+from datetime import timedelta
 from typing import override
 
 import attrs as a
 
+from schedule.shared.resource_name import ResourceName
 
-@a.define
+
+@a.define(frozen=True)
 class Stage:
     _name: str
-    _dependencies: set[Stage] = a.field(factory=set, eq=False)
-    _resources: set[ResourceName] = a.field(factory=set, eq=False)
+    _dependencies: set[Stage] = a.field(factory=set, eq=False, hash=False)
+    _resources: set[ResourceName] = a.field(factory=set, eq=False, hash=False)
+    _duration: timedelta = a.field(factory=timedelta, eq=False, hash=False)
 
     @property
     def name(self) -> str:
@@ -31,21 +35,21 @@ class Stage:
     def count_of_resources(self) -> int:
         return len(self._resources)
 
-    def depends_on(self, stage: Stage) -> Stage:
-        self._dependencies.add(stage)
-        return self
+    @property
+    def duration(self) -> timedelta:
+        return self._duration
 
-    @override
-    def __hash__(self) -> int:
-        return hash(self._name)
+    def depends_on(self, stage: Stage) -> Stage:
+        new_dependencies = self._dependencies.union({stage})
+        self._dependencies.add(stage)
+        return Stage(self._name, new_dependencies, self._resources, self._duration)
+
+    def with_chosen_resource_capabilities(self, *resources: ResourceName) -> Stage:
+        return Stage(self._name, self._dependencies, set(resources), self._duration)
+
+    def of_duration(self, duration: timedelta) -> Stage:
+        return Stage(self._name, self._dependencies, self._resources, duration)
 
     @override
     def __str__(self) -> str:
         return self._name
-
-    def with_chosen_resource_capabilities(self, *resources: ResourceName) -> Stage:
-        self._resources |= set(resources)
-        return self
-
-
-ResourceName = str

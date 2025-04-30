@@ -8,7 +8,7 @@ from .stage import Stage
 
 
 class StageParallelization:
-    def from_stages(self, stages: Sequence[Stage]) -> ParallelStagesSequence:
+    def from_stages(self, *stages: Stage) -> ParallelStagesSequence:
         temporary_graph: dict[str, Node[Stage]] = {stage.name: Node(name=stage.name, content=stage) for stage in stages}
         graph: Graph[Stage] = Graph()
 
@@ -21,7 +21,9 @@ class StageParallelization:
 
         sorted_nodes = graph.topological_sort()
 
-        return ParallelStagesSequence([ParallelStages(node.content for node in level) for level in sorted_nodes])
+        return ParallelStagesSequence.of(
+            *[ParallelStages.of(*(node.content for node in level)) for level in sorted_nodes]
+        )
 
     def _map_explicit_dependencies(self, stage: Stage, temporary_graph: dict[str, Node[Stage]]) -> None:
         if not stage.has_dependencies:

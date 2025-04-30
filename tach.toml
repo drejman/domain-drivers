@@ -28,7 +28,7 @@ from = ["schedule.simulation"]
 
 [[modules ]]
 path = "schedule.planning"
-depends_on = ["schedule.sorter"]
+depends_on = ["schedule.sorter", "schedule.availability"]
 
 [[interfaces]]
 expose = []
@@ -50,3 +50,11 @@ utility = true
 [[modules ]]
 path = "schedule.allocation"
 depends_on = ["schedule.simulation"]
+
+[[modules ]]
+path = "schedule.availability"
+depends_on = []
+
+[[interfaces]]
+expose = ["AvailabilityFacade"]
+from = ["schedule.availability"]

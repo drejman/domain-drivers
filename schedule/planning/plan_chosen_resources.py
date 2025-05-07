@@ -1,12 +1,15 @@
+from itertools import chain
 from typing import final
 
-from schedule.availability import AvailabilityFacade
+from schedule.availability import AvailabilityFacade, Calendars
 from schedule.shared.resource_name import ResourceName
 from schedule.shared.timeslot import TimeSlot
 
 from .chosen_resources import ChosenResources
+from .parallelization.stage import Stage
 from .project_id import ProjectId
 from .repository.planning_sqla_repository import ProjectRepository
+from .schedule import Schedule
 
 
 @final
@@ -28,3 +31,19 @@ class PlanChosenResources:
         project = self._project_repository.get(id=project_id)
         chosen_resources = ChosenResources(resources, time_boundaries)
         project.add_chosen_resources(chosen_resources)
+
+    def adjust_stages_to_resource_availability(
+        self, project_id: ProjectId, time_boundaries: TimeSlot, *stages: Stage
+    ) -> None:
+        needed_resources = set(chain.from_iterable(stage.resources for stage in stages))
+        project = self._project_repository.get(id=project_id)
+        self.define_resources_within_dates(project_id, needed_resources, time_boundaries)
+        # TODO: when availability is implemented  # noqa: FIX002, TD002, TD003
+        needed_resources_calendars = self._availability_facade.availabilities_of_resources()
+        schedule = self._create_schedule_adjusting_to_calendars(needed_resources_calendars, *stages)
+        project.add_schedule(schedule)
+
+    def _create_schedule_adjusting_to_calendars(
+        self, needed_resources_calendars: Calendars, *stages: Stage
+    ) -> Schedule:
+        return Schedule.based_on_chosen_resource_availability(needed_resources_calendars, list(stages))

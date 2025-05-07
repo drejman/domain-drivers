@@ -49,6 +49,12 @@ ignore = [
     "PLR2004",  # Magic value used in comparison
     "S101",  # Use of assert detected (hint: use `if __debug__: ...` instead)
     "DTZ001",  #`datetime.datetime()` called without a `tzinfo` argument
+    "TD002",
+    "TD003",
+    "TD004",
+    "TD005",
+    "FIX002",
+    "ARG002",
 ]
 
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from datetime import timedelta
 from operator import attrgetter
 from typing import override
 
@@ -20,6 +21,10 @@ class ParallelStages:
     @staticmethod
     def of(*stages: Stage) -> ParallelStages:
         return ParallelStages(stages)
+
+    @property
+    def duration(self) -> timedelta:
+        return max([stage.duration for stage in self.stages], default=timedelta(0))
 
     @override
     def __str__(self) -> str:

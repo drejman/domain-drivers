@@ -52,3 +52,15 @@ class TimeSlot:
         elif other.to > self.to:
             result.append(TimeSlot(self.to, other.to))
         return result
+
+    def common_part_with(self, other: TimeSlot) -> TimeSlot:
+        if not self.overlaps(other):
+            return TimeSlot(self.from_, self.from_)
+        return TimeSlot(max(self.from_, other.from_), min(self.to, other.to))
+
+    @property
+    def duration(self) -> timedelta:
+        return self.to - self.from_
+
+    def stretch(self, duration: timedelta) -> TimeSlot:
+        return TimeSlot(self.from_ - duration, self.to + duration)

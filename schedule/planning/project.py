@@ -4,11 +4,13 @@ from datetime import date
 
 import attrs as a
 
+from ..shared.timeslot import TimeSlot
 from .chosen_resources import ChosenResources
 from .demand import Demand
 from .demands import Demands
 from .demands_per_stage import DemandsPerStage
 from .parallelization.parallel_stages_seq import ParallelStagesSequence
+from .parallelization.stage import Stage
 from .project_id import ProjectId
 from .schedule import Schedule
 
@@ -46,3 +48,8 @@ class Project:
 
     def add_schedule(self, schedule: Schedule) -> None:
         self.schedule = schedule
+
+    def add_schedule_by_critical_stage(self, critical_stage: Stage, stage_time_slot: TimeSlot) -> None:
+        self.schedule = Schedule.based_on_reference_stage_time_slots(
+            critical_stage, stage_time_slot, self.parallelized_stages
+        )

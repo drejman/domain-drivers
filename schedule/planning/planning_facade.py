@@ -82,3 +82,22 @@ class PlanningFacade:
             demands_per_stage=project.demands_per_stage,
             needed_resources=project.chosen_resources,
         )
+
+    def plan_critical_stage(self, project_id: ProjectId, critical_stage: Stage, stage_time_slot: TimeSlot) -> None:
+        project = self._project_repository.get(id=project_id)
+        project.add_schedule_by_critical_stage(critical_stage, stage_time_slot)
+
+    def plan_critical_stage_with_resource(
+        self,
+        project_id: ProjectId,
+        critical_stage: Stage,
+        resource_name: ResourceName,  # pyright: ignore [reportUnusedParameter]  # noqa: ARG002
+        stage_time_slot: TimeSlot,
+    ) -> None:
+        project = self._project_repository.get(id=project_id)
+        project.add_schedule_by_critical_stage(critical_stage, stage_time_slot)
+
+    def adjust_stages_to_resource_availability(
+        self, project_id: ProjectId, time_boundaries: TimeSlot, *stages: Stage
+    ) -> None:
+        self._plan_chosen_resources_service.adjust_stages_to_resource_availability(project_id, time_boundaries, *stages)

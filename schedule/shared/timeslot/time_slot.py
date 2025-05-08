@@ -64,3 +64,6 @@ class TimeSlot:
 
     def stretch(self, duration: timedelta) -> TimeSlot:
         return TimeSlot(self.from_ - duration, self.to + duration)
+
+    def is_empty(self) -> bool:
+        return self.from_ == self.to

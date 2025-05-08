@@ -26,4 +26,4 @@ class SimulatedCapabilities:
 
     @classmethod
     def none(cls) -> SimulatedCapabilities:
-        return cls([])
+        return cls(frozenset())

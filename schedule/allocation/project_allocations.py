@@ -11,7 +11,12 @@ from schedule.shared.timeslot.time_slot import TimeSlot
 from .allocated_capability import AllocatedCapability
 from .allocations import Allocations
 from .demands import Demands
-from .events import CapabilitiesAllocatedEvent, CapabilityReleasedEvent
+from .events import (
+    CapabilitiesAllocatedEvent,
+    CapabilityReleasedEvent,
+    ProjectAllocationScheduledEvent,
+    ProjectAllocationsDemandsScheduledEvent,
+)
 from .project_allocations_id import ProjectAllocationsId
 from .resource_id import ResourceId
 
@@ -87,3 +92,13 @@ class ProjectAllocations:
 
     def has_time_slot(self) -> bool:
         return not self._time_slot.is_empty()
+
+    def add_demands(self, demands: Demands, when: datetime) -> ProjectAllocationsDemandsScheduledEvent:
+        self._demands = self._demands.with_new(demands)
+        return ProjectAllocationsDemandsScheduledEvent(
+            project_id=self._project_id, missing_demands=self.missing_demands(), occurred_at=when
+        )
+
+    def define_slot(self, slot: TimeSlot, when: datetime) -> ProjectAllocationScheduledEvent:
+        self._time_slot = slot
+        return ProjectAllocationScheduledEvent(project_id=self._project_id, from_to=self._time_slot, occurred_at=when)

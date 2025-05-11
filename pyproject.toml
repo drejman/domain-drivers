@@ -72,6 +72,7 @@ include = ["schedule"]
 exclude = [
     "**/test**",
     "**/tests/**",
+    "**/conftest.py",
     "schedule/shared/typing_extensions/comparable.py"
 ]
 
@@ -94,5 +95,6 @@ show_error_codes = true
 warn_unused_ignores = true
 exclude = [
     ".*test_.*",
-    ".*tests/.*.*"
+    ".*tests/.*.*",
+    ".*/conftest.py",
 ]

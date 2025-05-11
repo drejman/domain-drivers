@@ -1,5 +1,6 @@
 from datetime import timedelta
 from typing import Self, TypeVar, cast, final, override
+from uuid import UUID
 
 from cattrs.preconf.json import JsonConverter, make_converter  # pyright: ignore[reportUnknownVariableType]
 from sqlalchemy import Dialect, types
@@ -17,6 +18,14 @@ def seconds_to_timedelta(val: float, _: type) -> timedelta:
     return timedelta(seconds=val)
 
 
+def uuid_to_string(uuid: UUID) -> str:
+    return str(uuid)
+
+
+def string_to_uuid(string: str, _: type) -> UUID:
+    return UUID(string)
+
+
 @final
 class AsJSON[T](types.TypeDecorator[T]):
     """Will serialize to JSON and back everything that cattrs handles."""
@@ -30,8 +39,13 @@ class AsJSON[T](types.TypeDecorator[T]):
     @override
     def __class_getitem__(cls, type_: type[T]) -> Self:
         converter = make_converter()
+
         converter.register_unstructure_hook(timedelta, timedelta_to_seconds)
         converter.register_structure_hook(timedelta, seconds_to_timedelta)
+
+        converter.register_unstructure_hook(UUID, uuid_to_string)
+        converter.register_structure_hook(UUID, string_to_uuid)
+
         specialized_class = type(
             f"JSONSerializable[{type_.__name__}]",
             (cls,),

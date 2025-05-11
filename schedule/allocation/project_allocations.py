@@ -21,8 +21,9 @@ from .project_allocations_id import ProjectAllocationsId
 from .resource_id import ResourceId
 
 
-@a.define
+@a.define(slots=False)
 class ProjectAllocations:
+    _version: int = a.field(init=False, default=1)
     _project_id: ProjectAllocationsId
     _allocations: Allocations
     _demands: Demands
@@ -31,6 +32,18 @@ class ProjectAllocations:
     @property
     def allocations(self) -> Allocations:
         return self._allocations
+
+    @property
+    def demands(self) -> Demands:
+        return self._demands
+
+    @property
+    def time_slot(self) -> TimeSlot:
+        return self._time_slot
+
+    @property
+    def project_id(self) -> ProjectAllocationsId:
+        return self._project_id
 
     @staticmethod
     def empty(project_id: ProjectAllocationsId) -> ProjectAllocations:

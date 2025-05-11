@@ -5,12 +5,12 @@ from uuid import UUID
 
 import attrs as a
 
+from schedule.shared.timeslot import TimeSlot
+
 from .allocated_capability import AllocatedCapability
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
-
-    from schedule.shared.timeslot import TimeSlot
 
 
 def freeze_allocated_capabilites(

@@ -38,7 +38,7 @@ class PlanChosenResources:
         needed_resources = set(chain.from_iterable(stage.resources for stage in stages))
         project = self._project_repository.get(id=project_id)
         self.define_resources_within_dates(project_id, needed_resources, time_boundaries)
-        # TODO: when availability is implemented  # noqa: FIX002, TD002, TD003
+        # TODO: when availability is implemented  # noqa: FIX002, TD002
         needed_resources_calendars = self._availability_facade.availabilities_of_resources()
         schedule = self._create_schedule_adjusting_to_calendars(needed_resources_calendars, *stages)
         project.add_schedule(schedule)

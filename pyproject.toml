@@ -40,6 +40,7 @@ ignore = [
     "TC001",
     "TC003",
     "TID252", # Prefer absolute imports over relative imports from parent modules
+    "TD003",
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -50,7 +51,6 @@ ignore = [
     "S101",  # Use of assert detected (hint: use `if __debug__: ...` instead)
     "DTZ001",  #`datetime.datetime()` called without a `tzinfo` argument
     "TD002",
-    "TD003",
     "TD004",
     "TD005",
     "FIX002",

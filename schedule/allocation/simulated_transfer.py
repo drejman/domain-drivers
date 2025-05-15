@@ -10,6 +10,7 @@ from schedule.simulation import Demands as SimulationDemands
 from schedule.simulation import ProjectId, SimulatedProject
 
 from .allocated_capability import AllocatedCapability
+from .cashflow.earnings import Earnings
 from .project_allocations_id import ProjectAllocationsId
 from .projects_allocations_summary import ProjectsAllocationsSummary
 
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
 @a.frozen
 class SimulatedProjectAllocations:
     _summary: ProjectsAllocationsSummary
-    _earnings: dict[ProjectAllocationsId, Decimal]
+    _earnings: dict[ProjectAllocationsId, Earnings]
 
     def transfer(
         self,
@@ -50,8 +51,8 @@ class SimulatedProjectAllocations:
         return SimulatedProjectAllocations(self._summary, self._earnings)
 
     def to_simulated_projects(self) -> list[SimulatedProject]:
-        def value_getter(earnings: Decimal) -> Decimal:
-            return earnings
+        def value_getter(earnings: Earnings) -> Decimal:
+            return earnings.to_decimal()
 
         return [
             SimulatedProject(

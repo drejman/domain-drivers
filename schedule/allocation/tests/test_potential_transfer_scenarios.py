@@ -1,5 +1,4 @@
 from datetime import timedelta
-from decimal import Decimal
 from uuid import uuid4
 
 import pytest
@@ -11,6 +10,7 @@ from schedule.simulation.simulation_facade import SimulationFacade
 
 from ..allocated_capability import AllocatedCapability
 from ..allocation_facade import AllocationFacade
+from ..cashflow.earnings import Earnings
 from ..demand import Demand
 from ..demands import Demands
 from ..project_allocations_id import ProjectAllocationsId
@@ -95,8 +95,8 @@ class TestPotentialTransferScenarios:
         result = transfer_simulation_service.simulate_potential_transfer(
             project_from=banking_soft_id,
             project_to=insurance_soft_id,
-            project_from_earnings=Decimal(9),
-            project_to_earnings=Decimal(90),
+            project_from_earnings=Earnings(9),
+            project_to_earnings=Earnings(90),
             capability=allocated_capability,
             for_slot=staszek_java_mid.time_slot,
         )
@@ -131,8 +131,8 @@ class TestPotentialTransferScenarios:
         result = transfer_simulation_service.simulate_potential_transfer(
             project_from=banking_soft_id,
             project_to=insurance_soft_id,
-            project_from_earnings=Decimal(9),
-            project_to_earnings=Decimal(19),
+            project_from_earnings=Earnings(9),
+            project_to_earnings=Earnings(19),
             capability=allocated_capability,
             for_slot=fifteen_minutes_in_jan,
         )
@@ -167,8 +167,8 @@ class TestPotentialTransferScenarios:
         result = transfer_simulation_service.simulate_potential_transfer(
             project_from=banking_soft_id,
             project_to=insurance_soft_id,
-            project_from_earnings=Decimal(9),
-            project_to_earnings=Decimal(19),
+            project_from_earnings=Earnings(9),
+            project_to_earnings=Earnings(19),
             capability=allocated_capability,
             for_slot=jan_1,
         )

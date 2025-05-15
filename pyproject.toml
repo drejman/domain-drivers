@@ -55,6 +55,7 @@ ignore = [
     "TD005",
     "FIX002",
     "ARG002",
+    "FBT001",  # Boolean-typed positional argument in function definition
 ]
 
 

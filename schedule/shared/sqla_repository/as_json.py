@@ -1,4 +1,5 @@
 from datetime import timedelta
+from decimal import Decimal
 from typing import Self, TypeVar, cast, final, override
 from uuid import UUID
 
@@ -26,6 +27,14 @@ def string_to_uuid(string: str, _: type) -> UUID:
     return UUID(string)
 
 
+def decimal_to_string(decimal: Decimal) -> str:
+    return str(decimal)
+
+
+def string_to_decimal(string: str, _: type) -> Decimal:
+    return Decimal(string)
+
+
 @final
 class AsJSON[T](types.TypeDecorator[T]):
     """Will serialize to JSON and back everything that cattrs handles."""
@@ -45,6 +54,9 @@ class AsJSON[T](types.TypeDecorator[T]):
 
         converter.register_unstructure_hook(UUID, uuid_to_string)
         converter.register_structure_hook(UUID, string_to_uuid)
+
+        converter.register_unstructure_hook(Decimal, decimal_to_string)
+        converter.register_structure_hook(Decimal, string_to_decimal)
 
         specialized_class = type(
             f"JSONSerializable[{type_.__name__}]",

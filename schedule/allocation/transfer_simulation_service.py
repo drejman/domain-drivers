@@ -5,6 +5,7 @@ from schedule.simulation import SimulatedCapabilities, SimulationFacade
 
 from .allocated_capability import AllocatedCapability
 from .allocation_facade import AllocationFacade
+from .cashflow.earnings import Earnings
 from .project_allocations_id import ProjectAllocationsId
 from .simulated_transfer import SimulatedProjectAllocations
 
@@ -19,8 +20,8 @@ class TransferSimulationService:
         self,
         project_from: ProjectAllocationsId,
         project_to: ProjectAllocationsId,
-        project_from_earnings: Decimal,
-        project_to_earnings: Decimal,
+        project_from_earnings: Earnings,
+        project_to_earnings: Earnings,
         capability: AllocatedCapability,
         for_slot: TimeSlot,
     ) -> Decimal:

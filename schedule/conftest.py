@@ -19,7 +19,7 @@ def postgres_container() -> Iterator[PostgresContainer]:
 @pytest.fixture(scope="session")
 def engine_for_tests(postgres_container: PostgresContainer) -> Engine:
     url = postgres_container.get_connection_url()
-    engine = create_engine(url, echo=True)
+    engine = create_engine(url)
 
     # There seems to be some race condition. Fine, let's wait.
     start = time.monotonic()

@@ -25,6 +25,19 @@ class TestAvailabilityFacade:
         grouped = availability_facade.find(resource_id, one_day)
         assert len(grouped) == 96
 
+    @pytest.mark.xfail(reason="not yet correctly implemented")
+    def test_creates_already_existing_availability_slots(self, availability_facade: AvailabilityFacade) -> None:
+        resource_id = ResourceAvailabilityId.new_one()
+        jan_1 = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
+        jan_2 = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 2)
+        jan_1_2 = TimeSlot(jan_1.from_, jan_2.to)
+        availability_facade.create_resource_slots(resource_id, jan_1)
+
+        availability_facade.create_resource_slots(resource_id, jan_1_2)
+
+        grouped = availability_facade.find(resource_id, jan_2)
+        assert len(grouped) == 96
+
     def test_blocks_availabilities(self, availability_facade: AvailabilityFacade) -> None:
         resource_id = ResourceAvailabilityId.new_one()
         one_day = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)

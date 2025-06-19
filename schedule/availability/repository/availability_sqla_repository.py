@@ -8,14 +8,14 @@ from sqlalchemy.orm import composite
 
 from schedule.availability.blockade import Blockade
 from schedule.availability.grouped_resource_availability import GroupedResourceAvailability
-from schedule.availability.normalized_time_slots.normalized_time_slot import QuantizedTimeSlot
 from schedule.availability.owner import Owner
 from schedule.availability.resource_availability import ResourceAvailability
 from schedule.availability.resource_availability_id import ResourceAvailabilityId
+from schedule.availability.time_blocks.atomic_time_block import AtomicTimeBlock
+from schedule.availability.time_blocks.normalized_slot import NormalizedSlot
 from schedule.shared.sqla_repository import EmbeddedUUID
 from schedule.shared.sqla_repository.mappers import mapper_registry
 from schedule.shared.sqla_repository.sqla_repository import SQLAlchemyRepository
-from schedule.shared.timeslot import TimeSlot
 
 availabilities = Table(
     "availabilities",
@@ -42,7 +42,7 @@ _ = mapper_registry.map_imperatively(
     properties={
         "_id": availabilities.c.id,
         "_resource_id": availabilities.c.resource_id,
-        "_time_slot": composite(QuantizedTimeSlot, availabilities.c.from_date, availabilities.c.to_date),
+        "_time_block": composite(AtomicTimeBlock, availabilities.c.from_date, availabilities.c.to_date),
         "_blockade": composite(create_blockade, availabilities.c.taken_by, availabilities.c.disabled),
         "_version": availabilities.c.version,
     },
@@ -65,7 +65,7 @@ class ResourceAvailabilityRepository(SQLAlchemyRepository[ResourceAvailability, 
                 self.add_many(model.resource_availabilities)
 
     def load_all_within_slot(
-        self, resource_id: ResourceAvailabilityId, time_slot: TimeSlot
+        self, resource_id: ResourceAvailabilityId, time_slot: NormalizedSlot
     ) -> Sequence[ResourceAvailability]:
         # TODO: think about better solution once we get to transactions  # noqa: FIX002, TD002
         self._session.expire_all()
@@ -75,3 +75,8 @@ class ResourceAvailabilityRepository(SQLAlchemyRepository[ResourceAvailability, 
             availabilities.c.to_date <= time_slot.to,
         )
         return self._session.execute(stmt).scalars().all()
+
+    def load_by_id(self, resource_availability_id: ResourceAvailabilityId) -> ResourceAvailability:
+        stmt = select(ResourceAvailability).filter(availabilities.c.id == resource_availability_id)
+        availability: ResourceAvailability = self._session.execute(stmt).one()[0]
+        return availability

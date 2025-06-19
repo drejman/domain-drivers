@@ -31,8 +31,7 @@ class SQLAlchemyRepository[TModel, TIdentity]:
         self._session.flush([model])
 
     def add_many(self, models: Sequence[TModel]) -> None:
-        for model in models:
-            self._session.add(model)
+        self._session.add_all(models)
         self._session.flush(models)
 
     def get(self, id: TIdentity) -> TModel:  # noqa: A002

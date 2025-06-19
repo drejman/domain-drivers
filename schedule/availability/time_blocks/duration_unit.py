@@ -12,28 +12,28 @@ def _convert_minutes_to_timedelta(minutes: int) -> timedelta:
 
 
 def _validate_minutes(
-    instance: TimeQuantumInMinutes,  # pyright: ignore[reportUnusedParameter]  # noqa: ARG001
+    instance: DurationUnit,  # pyright: ignore[reportUnusedParameter]  # noqa: ARG001
     attribute: a.Attribute[timedelta],  # pyright: ignore[reportUnusedParameter]  # noqa: ARG001
     value: timedelta,
     default_duration: timedelta,
 ) -> timedelta:
     if value.total_seconds() <= 0:
-        error = "SegmentInMinutesDuraton must be greater than 0"
+        error = "DurationUnit must be greater than 0"
         raise ValueError(error)
     if value.total_seconds() % default_duration.total_seconds() != 0:
-        error = f"SegmentInMinutesDuration must be a multiple of {default_duration}"
+        error = f"DurationUnit must be a multiple of {default_duration}"
         raise ValueError(error)
     return value
 
 
 @a.frozen
-class TimeQuantumInMinutes:
-    DEFAULT_QUANTUM_DURATION_IN_MINUTES: ClassVar[timedelta] = timedelta(minutes=15)
+class DurationUnit:
+    DEFAULT_DURATION_IN_MINUTES: ClassVar[timedelta] = timedelta(minutes=15)
 
     _value: timedelta = a.field(
         alias="minutes",
         converter=_convert_minutes_to_timedelta,
-        validator=partial(_validate_minutes, default_duration=DEFAULT_QUANTUM_DURATION_IN_MINUTES),
+        validator=partial(_validate_minutes, default_duration=DEFAULT_DURATION_IN_MINUTES),
     )
 
     @property
@@ -41,5 +41,5 @@ class TimeQuantumInMinutes:
         return self._value
 
     @classmethod
-    def default_segment(cls) -> TimeQuantumInMinutes:
-        return TimeQuantumInMinutes(minutes=int(cls.DEFAULT_QUANTUM_DURATION_IN_MINUTES.total_seconds() / 60))
+    def default(cls) -> DurationUnit:
+        return DurationUnit(minutes=int(cls.DEFAULT_DURATION_IN_MINUTES.total_seconds() / 60))

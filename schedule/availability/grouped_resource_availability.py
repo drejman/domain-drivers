@@ -4,11 +4,11 @@ from collections.abc import Sequence
 
 import attrs as a
 
-from schedule.availability.normalized_time_slots.normalized_time_slot import QuantizedTimeSlot
-from schedule.availability.normalized_time_slots.time_quant import TimeQuantumInMinutes
 from schedule.availability.owner import Owner
 from schedule.availability.resource_availability import ResourceAvailability
 from schedule.availability.resource_availability_id import ResourceAvailabilityId
+from schedule.availability.time_blocks.atomic_time_block import AtomicTimeBlock
+from schedule.availability.time_blocks.duration_unit import DurationUnit
 from schedule.shared.timeslot import TimeSlot
 
 
@@ -35,9 +35,7 @@ class GroupedResourceAvailability:
                 resource_id,
                 quantized_time_slot,
             )
-            for quantized_time_slot in QuantizedTimeSlot.from_time_slot(
-                time_slot=time_slot, unit=TimeQuantumInMinutes.default_segment()
-            )
+            for quantized_time_slot in AtomicTimeBlock.split(time_slot=time_slot, duration_unit=DurationUnit.default())
         ]
         return GroupedResourceAvailability(resource_availabilities)
 

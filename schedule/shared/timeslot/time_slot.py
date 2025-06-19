@@ -6,7 +6,7 @@ from datetime import UTC, date, datetime, time, timedelta
 from dateutil import relativedelta
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, eq=True)
 class TimeSlot:
     from_: datetime
     to: datetime

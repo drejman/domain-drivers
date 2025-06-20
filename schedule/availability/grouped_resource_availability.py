@@ -43,7 +43,9 @@ class GroupedResourceAvailability:
         return GroupedResourceAvailability(resource_availabilities)
 
     def block(self, requester: Owner) -> bool:
-        return all(resource_availability.block(requester) for resource_availability in self.resource_availabilities)
+        return self._is_not_empty and all(
+            resource_availability.block(requester) for resource_availability in self.resource_availabilities
+        )
 
     def blocked_entirely_by(self, owner: Owner) -> bool:
         return all(resource_availability.blocked_by == owner for resource_availability in self._resource_availabilities)
@@ -58,13 +60,17 @@ class GroupedResourceAvailability:
         )
 
     def disable(self, requester: Owner) -> bool:
-        return all(resource_availability.disable(requester) for resource_availability in self._resource_availabilities)
+        return self._is_not_empty and all(
+            resource_availability.disable(requester) for resource_availability in self._resource_availabilities
+        )
 
     def is_entirely_available(self) -> bool:
         return all(resource_availability.blocked_by for resource_availability in self._resource_availabilities)
 
     def release(self, requester: Owner) -> bool:
-        return all(resource_availability.release(requester) for resource_availability in self._resource_availabilities)
+        return self._is_not_empty and all(
+            resource_availability.release(requester) for resource_availability in self._resource_availabilities
+        )
 
     def find_blocked_by(self, owner: Owner) -> list[ResourceAvailability]:
         return [
@@ -72,3 +78,9 @@ class GroupedResourceAvailability:
             for resource_availability in self.resource_availabilities
             if resource_availability.blocked_by == owner
         ]
+
+    @property
+    def _is_not_empty(self) -> bool:
+        # TODO: consider raising exception in case of empty list   # noqa: FIX002, TD002
+        #  - what's the point of changing empty availabilities?
+        return len(self._resource_availabilities) > 0

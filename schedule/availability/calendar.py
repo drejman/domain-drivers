@@ -34,7 +34,7 @@ class Calendar:
         )
 
     def available_slots(self) -> TimeSlots:
-        return self.calendar.get(Owner.none(), tuple())
+        return self.calendar.get(Owner.none(), ())
 
     def taken_by(self, owner: Owner) -> TimeSlots:
-        return self.calendar.get(owner, tuple())
+        return self.calendar.get(owner, ())

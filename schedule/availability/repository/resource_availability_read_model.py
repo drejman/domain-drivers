@@ -19,7 +19,7 @@ from sqlalchemy import (
     func,
     select,
 )
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session  # noqa: TC002 # needed for dependency injection
 
 from schedule.shared.timeslot.time_slot import TimeSlot
 

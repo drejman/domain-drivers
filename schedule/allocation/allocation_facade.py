@@ -1,7 +1,7 @@
 from datetime import UTC, datetime
 from uuid import UUID
 
-from schedule.availability import ResourceId
+from schedule.availability import AvailabilityFacade, Owner, ResourceId
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
 
@@ -18,8 +18,13 @@ from .repository.allocation_sqla_repository import (
 
 
 class AllocationFacade:
-    def __init__(self, project_allocations_repository: ProjectAllocationsRepository) -> None:
+    def __init__(
+        self,
+        project_allocations_repository: ProjectAllocationsRepository,
+        availability_facade: AvailabilityFacade,
+    ) -> None:
         self._project_allocations_repository: ProjectAllocationsRepository = project_allocations_repository
+        self._availability_facade: AvailabilityFacade = availability_facade
 
     def create_allocation(self, time_slot: TimeSlot, scheduled_demands: Demands) -> ProjectAllocationsId:
         project_id = ProjectAllocationsId.new_one()
@@ -42,6 +47,10 @@ class AllocationFacade:
         capability: Capability,
         time_slot: TimeSlot,
     ) -> UUID | None:
+        # TODO: add transaction  # noqa: FIX002, TD002
+        owner = Owner(project_id.id)
+        if self._availability_facade.block(resource_id=resource_id, time_slot=time_slot, requester=owner) is False:
+            return None
         allocations = self._project_allocations_repository.get(project_id)
         event = allocations.allocate(resource_id, capability, time_slot, datetime.now(tz=UTC))
         return event.allocated_capability_id if event is not None else None
@@ -52,6 +61,7 @@ class AllocationFacade:
         allocatable_capability_id: UUID,
         time_slot: TimeSlot,
     ) -> bool:
+        # TODO: rethink and potentially add transaction  # noqa: FIX002, TD002
         allocations = self._project_allocations_repository.get(project_id)
         event = allocations.release(allocatable_capability_id, time_slot, datetime.now(tz=UTC))
         return event is not None

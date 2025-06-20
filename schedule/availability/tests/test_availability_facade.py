@@ -48,6 +48,15 @@ class TestAvailabilityFacade:
         assert len(monthly_calendar.available_slots()) == 0
         assert monthly_calendar.taken_by(owner) == (one_day,)
 
+    def test_cant_block_when_no_slots_created(self, availability_facade: AvailabilityFacade) -> None:
+        resource_id = ResourceId.new_one()
+        one_day = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
+        owner = Owner.new_one()
+
+        result = availability_facade.block(resource_id, one_day, owner)
+
+        assert result is False
+
     def test_disable_availabilities(self, availability_facade: AvailabilityFacade) -> None:
         resource_id = ResourceId.new_one()
         one_day = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)

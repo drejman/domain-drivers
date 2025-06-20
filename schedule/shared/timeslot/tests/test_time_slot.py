@@ -152,7 +152,7 @@ class TestTimeSlot:
             to=datetime(2022, 1, 10, tzinfo=UTC),
         )
 
-        assert slot_1.leftover_after_removing_common_with(slot_1) == tuple()
+        assert slot_1.leftover_after_removing_common_with(slot_1) == ()
 
     def test_removing_common_parts_when_there_is_some_overlap(self) -> None:
         slot_1 = TimeSlot(

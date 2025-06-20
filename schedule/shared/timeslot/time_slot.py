@@ -40,7 +40,7 @@ class TimeSlot:
     def leftover_after_removing_common_with(self, other: TimeSlot) -> tuple[TimeSlot, ...]:
         result: list[TimeSlot] = []
         if self == other:
-            return tuple()
+            return ()
         if not other.overlaps(self):
             return (self, other)
         if self.from_ < other.from_:

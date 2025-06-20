@@ -56,5 +56,5 @@ path = "schedule.availability"
 depends_on = []
 
 [[interfaces]]
-expose = ["AvailabilityFacade", "Calendars", "ResourceId"]
+expose = ["AvailabilityFacade", "Calendars", "Owner", "ResourceId"]
 from = ["schedule.availability"]

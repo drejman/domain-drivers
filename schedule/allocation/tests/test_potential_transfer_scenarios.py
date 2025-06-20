@@ -3,7 +3,6 @@ from uuid import uuid4
 
 import pytest
 
-from schedule.availability.resource_id import ResourceId
 from schedule.optimization.optimization_facade import OptimizationFacade
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
@@ -16,6 +15,7 @@ from ..demand import Demand
 from ..demands import Demands
 from ..project_allocations_id import ProjectAllocationsId
 from ..transfer_simulation_service import TransferSimulationService
+from .conftest import AllocatableResourceFactory
 
 
 @pytest.fixture
@@ -77,6 +77,7 @@ class TestPotentialTransferScenarios:
         staszek_java_mid: AllocatedCapability,
         transfer_simulation_service: TransferSimulationService,
         allocation_facade: AllocationFacade,
+        allocatable_resource_factory: AllocatableResourceFactory,
     ) -> None:
         allocation_facade.schedule_project_allocations_demands(
             project_id=banking_soft_id, demands=demand_for_java_mid_in_jan
@@ -86,7 +87,7 @@ class TestPotentialTransferScenarios:
         )
         allocation_uuid = allocation_facade.allocate_to_project(
             project_id=banking_soft_id,
-            resource_id=ResourceId(staszek_java_mid.resource_id),
+            resource_id=allocatable_resource_factory(staszek_java_mid.time_slot),
             capability=staszek_java_mid.capability,
             time_slot=staszek_java_mid.time_slot,
         )
@@ -113,6 +114,7 @@ class TestPotentialTransferScenarios:
         fifteen_minutes_in_jan: TimeSlot,
         transfer_simulation_service: TransferSimulationService,
         allocation_facade: AllocationFacade,
+        allocatable_resource_factory: AllocatableResourceFactory,
     ) -> None:
         allocation_facade.schedule_project_allocations_demands(
             project_id=banking_soft_id, demands=demand_for_java_mid_in_jan
@@ -122,7 +124,7 @@ class TestPotentialTransferScenarios:
         )
         allocation_uuid = allocation_facade.allocate_to_project(
             project_id=banking_soft_id,
-            resource_id=ResourceId(staszek_java_mid.resource_id),
+            resource_id=allocatable_resource_factory(staszek_java_mid.time_slot),
             capability=staszek_java_mid.capability,
             time_slot=staszek_java_mid.time_slot,
         )
@@ -149,6 +151,7 @@ class TestPotentialTransferScenarios:
         jan_1: TimeSlot,
         transfer_simulation_service: TransferSimulationService,
         allocation_facade: AllocationFacade,
+        allocatable_resource_factory: AllocatableResourceFactory,
     ) -> None:
         allocation_facade.schedule_project_allocations_demands(
             project_id=banking_soft_id, demands=demand_for_java_mid_in_jan
@@ -158,7 +161,7 @@ class TestPotentialTransferScenarios:
         )
         allocation_uuid = allocation_facade.allocate_to_project(
             project_id=banking_soft_id,
-            resource_id=ResourceId(staszek_java_mid.resource_id),
+            resource_id=allocatable_resource_factory(staszek_java_mid.time_slot),
             capability=staszek_java_mid.capability,
             time_slot=staszek_java_mid.time_slot,
         )

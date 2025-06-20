@@ -5,14 +5,14 @@ from typing import override
 
 import attrs as a
 
-from schedule.shared.resource_name import ResourceName
+from schedule.availability import ResourceId
 
 
 @a.define(frozen=True)
 class Stage:
     _name: str
     _dependencies: set[Stage] = a.field(factory=set, eq=False, hash=False)
-    _resources: set[ResourceName] = a.field(factory=set, eq=False, hash=False)
+    _resources: set[ResourceId] = a.field(factory=set, eq=False, hash=False)
     _duration: timedelta = a.field(factory=timedelta, eq=False, hash=False)
 
     @property
@@ -28,7 +28,7 @@ class Stage:
         return len(self._dependencies) > 0
 
     @property
-    def resources(self) -> set[ResourceName]:
+    def resources(self) -> set[ResourceId]:
         return self._resources
 
     @property
@@ -44,7 +44,7 @@ class Stage:
         self._dependencies.add(stage)
         return Stage(self._name, new_dependencies, self._resources, self._duration)
 
-    def with_chosen_resource_capabilities(self, *resources: ResourceName) -> Stage:
+    def with_chosen_resource_capabilities(self, *resources: ResourceId) -> Stage:
         return Stage(self._name, self._dependencies, set(resources), self._duration)
 
     def of_duration(self, duration: timedelta) -> Stage:

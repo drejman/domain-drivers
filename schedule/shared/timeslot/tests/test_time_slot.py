@@ -144,7 +144,7 @@ class TestTimeSlot:
             to=datetime(2022, 1, 20, tzinfo=UTC),
         )
 
-        assert slot_1.leftover_after_removing_common_with(slot_2) == [slot_1, slot_2]
+        assert slot_1.leftover_after_removing_common_with(slot_2) == (slot_1, slot_2)
 
     def test_removing_common_parts_when_there_is_full_overlap(self) -> None:
         slot_1 = TimeSlot(
@@ -152,7 +152,7 @@ class TestTimeSlot:
             to=datetime(2022, 1, 10, tzinfo=UTC),
         )
 
-        assert slot_1.leftover_after_removing_common_with(slot_1) == []
+        assert slot_1.leftover_after_removing_common_with(slot_1) == tuple()
 
     def test_removing_common_parts_when_there_is_some_overlap(self) -> None:
         slot_1 = TimeSlot(
@@ -166,7 +166,7 @@ class TestTimeSlot:
 
         difference = slot_1.leftover_after_removing_common_with(slot_2)
 
-        assert difference == [
+        assert difference == (
             TimeSlot(
                 from_=datetime(2022, 1, 1, tzinfo=UTC),
                 to=datetime(2022, 1, 10, tzinfo=UTC),
@@ -175,7 +175,7 @@ class TestTimeSlot:
                 from_=datetime(2022, 1, 15, tzinfo=UTC),
                 to=datetime(2022, 1, 20, tzinfo=UTC),
             ),
-        ]
+        )
 
         slot_3 = TimeSlot(
             from_=datetime(2022, 1, 5, tzinfo=UTC),
@@ -188,7 +188,7 @@ class TestTimeSlot:
 
         difference2 = slot_3.leftover_after_removing_common_with(slot_4)
 
-        assert difference2 == [
+        assert difference2 == (
             TimeSlot(
                 from_=datetime(2022, 1, 1, tzinfo=UTC),
                 to=datetime(2022, 1, 5, tzinfo=UTC),
@@ -197,7 +197,7 @@ class TestTimeSlot:
                 from_=datetime(2022, 1, 10, tzinfo=UTC),
                 to=datetime(2022, 1, 20, tzinfo=UTC),
             ),
-        ]
+        )
 
     def test_removing_common_parts_when_one_slot_is_fully_within_another(self) -> None:
         slot_1 = TimeSlot(
@@ -211,7 +211,7 @@ class TestTimeSlot:
 
         difference = slot_1.leftover_after_removing_common_with(slot_2)
 
-        assert difference == [
+        assert difference == (
             TimeSlot(
                 from_=datetime(2022, 1, 1, tzinfo=UTC),
                 to=datetime(2022, 1, 10, tzinfo=UTC),
@@ -220,4 +220,4 @@ class TestTimeSlot:
                 from_=datetime(2022, 1, 15, tzinfo=UTC),
                 to=datetime(2022, 1, 20, tzinfo=UTC),
             ),
-        ]
+        )

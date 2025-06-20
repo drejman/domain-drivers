@@ -1,7 +1,7 @@
 from datetime import date
 from typing import final
 
-from schedule.shared.resource_name import ResourceName
+from schedule.availability import ResourceId
 from schedule.shared.timeslot import TimeSlot
 
 from .demands import Demands
@@ -45,7 +45,7 @@ class PlanningFacade:
     def define_resources_within_dates(
         self,
         project_id: ProjectId,
-        chosen_resources: set[ResourceName],
+        chosen_resources: set[ResourceId],
         time_boundaries: TimeSlot,
     ) -> None:
         self._plan_chosen_resources_service.define_resources_within_dates(project_id, chosen_resources, time_boundaries)
@@ -91,7 +91,7 @@ class PlanningFacade:
         self,
         project_id: ProjectId,
         critical_stage: Stage,
-        resource_name: ResourceName,  # pyright: ignore [reportUnusedParameter]  # noqa: ARG002
+        resource_name: ResourceId,  # pyright: ignore [reportUnusedParameter]  # noqa: ARG002
         stage_time_slot: TimeSlot,
     ) -> None:
         project = self._project_repository.get(id=project_id)

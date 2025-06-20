@@ -10,9 +10,9 @@ from schedule.planning.demands_per_stage import DemandsPerStage
 from schedule.planning.parallelization.stage import Stage
 from schedule.planning.schedule.schedule import Schedule
 from schedule.shared.capability.capability import Capability
-from schedule.shared.resource_name import ResourceName
 from schedule.shared.timeslot.time_slot import TimeSlot
 
+from ...availability import ResourceId
 from ..planning_facade import PlanningFacade
 
 
@@ -89,7 +89,7 @@ class TestPlanningFacade:
     def test_plans_needed_resources_in_time(self, planning_facade: PlanningFacade) -> None:
         project_id = planning_facade.add_new_project("project")
 
-        needed_resources = {ResourceName("resource1")}
+        needed_resources = {ResourceId.new_one()}
         first_half_of_the_year = TimeSlot(from_=datetime(2022, 1, 1), to=datetime(2022, 6, 30))
         planning_facade.define_resources_within_dates(project_id, needed_resources, first_half_of_the_year)
 

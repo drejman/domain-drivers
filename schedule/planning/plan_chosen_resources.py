@@ -1,8 +1,7 @@
 from itertools import chain
 from typing import final
 
-from schedule.availability import AvailabilityFacade, Calendars
-from schedule.shared.resource_name import ResourceName
+from schedule.availability import AvailabilityFacade, Calendars, ResourceId
 from schedule.shared.timeslot import TimeSlot
 
 from .chosen_resources import ChosenResources
@@ -25,7 +24,7 @@ class PlanChosenResources:
     def define_resources_within_dates(
         self,
         project_id: ProjectId,
-        resources: set[ResourceName],
+        resources: set[ResourceId],
         time_boundaries: TimeSlot,
     ) -> None:
         project = self._project_repository.get(id=project_id)

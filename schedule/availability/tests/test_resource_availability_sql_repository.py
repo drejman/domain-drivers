@@ -5,7 +5,6 @@ from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 
 import pytest
-from lagom.container import Container
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import StaleDataError
@@ -20,11 +19,6 @@ from ..resource_availability import ResourceAvailability
 from ..resource_availability_id import ResourceAvailabilityId
 from ..time_blocks.atomic_time_block import AtomicTimeBlock
 from ..time_blocks.duration_unit import DurationUnit
-
-
-@pytest.fixture
-def repository(container: Container) -> ResourceAvailabilityRepository:
-    return container.resolve(ResourceAvailabilityRepository)
 
 
 class TestResourceAvailabilityLoading:

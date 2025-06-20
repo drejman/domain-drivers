@@ -37,12 +37,12 @@ class TimeSlot:
     def overlaps(self, other: TimeSlot) -> bool:
         return self.from_ <= other.to and self.to >= other.from_
 
-    def leftover_after_removing_common_with(self, other: TimeSlot) -> list[TimeSlot]:
+    def leftover_after_removing_common_with(self, other: TimeSlot) -> tuple[TimeSlot, ...]:
         result: list[TimeSlot] = []
         if self == other:
-            return []
+            return tuple()
         if not other.overlaps(self):
-            return [self, other]
+            return (self, other)
         if self.from_ < other.from_:
             result.append(TimeSlot(self.from_, other.from_))
         elif other.from_ < self.from_:
@@ -51,7 +51,7 @@ class TimeSlot:
             result.append(TimeSlot(other.to, self.to))
         elif other.to > self.to:
             result.append(TimeSlot(self.to, other.to))
-        return result
+        return tuple(result)
 
     def common_part_with(self, other: TimeSlot) -> TimeSlot:
         if not self.overlaps(other):

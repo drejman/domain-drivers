@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Final
 
-from schedule.allocation.resource_id import ResourceId
+from schedule.availability.resource_id import ResourceId
 from schedule.planning.parallelization.stage import Stage
 from schedule.planning.planning_facade import PlanningFacade
 from schedule.planning.project_id import ProjectId

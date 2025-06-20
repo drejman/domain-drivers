@@ -1,3 +1,4 @@
+from schedule.availability.resource_id import ResourceId
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
 
@@ -6,7 +7,6 @@ from ..allocation_facade import AllocationFacade
 from ..demand import Demand
 from ..demands import Demands
 from ..project_allocations_id import ProjectAllocationsId
-from ..resource_id import ResourceId
 
 
 class TestCreatingNewProject:

@@ -4,12 +4,14 @@ from collections.abc import Sequence
 
 import attrs as a
 
-from schedule.availability.owner import Owner
-from schedule.availability.resource_availability import ResourceAvailability
-from schedule.availability.resource_availability_id import ResourceAvailabilityId
-from schedule.availability.time_blocks.atomic_time_block import AtomicTimeBlock
-from schedule.availability.time_blocks.duration_unit import DurationUnit
 from schedule.shared.timeslot import TimeSlot
+
+from .owner import Owner
+from .resource_availability import ResourceAvailability
+from .resource_availability_id import ResourceAvailabilityId
+from .resource_id import ResourceId
+from .time_blocks.atomic_time_block import AtomicTimeBlock
+from .time_blocks.duration_unit import DurationUnit
 
 
 def _convert_sequence_to_list(resource_availabilities: Sequence[ResourceAvailability]) -> list[ResourceAvailability]:
@@ -26,8 +28,9 @@ class GroupedResourceAvailability:
 
     @staticmethod
     def of(
-        resource_id: ResourceAvailabilityId,
+        resource_id: ResourceId,
         time_slot: TimeSlot,
+        duration_unit: DurationUnit,
     ) -> GroupedResourceAvailability:
         resource_availabilities = [
             ResourceAvailability(
@@ -35,7 +38,7 @@ class GroupedResourceAvailability:
                 resource_id,
                 quantized_time_slot,
             )
-            for quantized_time_slot in AtomicTimeBlock.split(time_slot=time_slot, duration_unit=DurationUnit.default())
+            for quantized_time_slot in AtomicTimeBlock.split(time_slot=time_slot, duration_unit=duration_unit)
         ]
         return GroupedResourceAvailability(resource_availabilities)
 

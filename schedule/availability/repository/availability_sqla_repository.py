@@ -11,6 +11,7 @@ from schedule.availability.grouped_resource_availability import GroupedResourceA
 from schedule.availability.owner import Owner
 from schedule.availability.resource_availability import ResourceAvailability
 from schedule.availability.resource_availability_id import ResourceAvailabilityId
+from schedule.availability.resource_id import ResourceId
 from schedule.availability.time_blocks.atomic_time_block import AtomicTimeBlock
 from schedule.availability.time_blocks.normalized_slot import NormalizedSlot
 from schedule.shared.sqla_repository import EmbeddedUUID
@@ -21,7 +22,7 @@ availabilities = Table(
     "availabilities",
     mapper_registry.metadata,
     Column("id", EmbeddedUUID[ResourceAvailabilityId], primary_key=True),
-    Column("resource_id", EmbeddedUUID[ResourceAvailabilityId], nullable=False),
+    Column("resource_id", EmbeddedUUID[ResourceId], nullable=False),
     Column("from_date", DateTime(timezone=True), nullable=False),
     Column("to_date", DateTime(timezone=True), nullable=False),
     Column("taken_by", UUID(as_uuid=True), nullable=False),
@@ -65,7 +66,7 @@ class ResourceAvailabilityRepository(SQLAlchemyRepository[ResourceAvailability, 
                 self.add_many(model.resource_availabilities)
 
     def load_all_within_slot(
-        self, resource_id: ResourceAvailabilityId, time_slot: NormalizedSlot
+        self, resource_id: ResourceId, time_slot: NormalizedSlot
     ) -> Sequence[ResourceAvailability]:
         # TODO: think about better solution once we get to transactions  # noqa: FIX002, TD002
         self._session.expire_all()

@@ -7,7 +7,7 @@ from schedule.shared.timeslot.time_slot import TimeSlot
 
 from ..availability_facade import AvailabilityFacade
 from ..owner import Owner
-from ..resource_availability_id import ResourceAvailabilityId
+from ..resource_id import ResourceId
 
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def availability_facade(container: Container) -> AvailabilityFacade:
 
 class TestAvailabilityFacade:
     def test_creates_availability_slots(self, availability_facade: AvailabilityFacade) -> None:
-        resource_id = ResourceAvailabilityId.new_one()
+        resource_id = ResourceId.new_one()
         one_day = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
 
         availability_facade.create_resource_slots(resource_id, one_day)
@@ -27,7 +27,7 @@ class TestAvailabilityFacade:
 
     @pytest.mark.xfail(reason="not yet correctly implemented")
     def test_creates_already_existing_availability_slots(self, availability_facade: AvailabilityFacade) -> None:
-        resource_id = ResourceAvailabilityId.new_one()
+        resource_id = ResourceId.new_one()
         jan_1 = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
         jan_2 = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 2)
         jan_1_2 = TimeSlot(jan_1.from_, jan_2.to)
@@ -39,7 +39,7 @@ class TestAvailabilityFacade:
         assert len(grouped) == 96
 
     def test_blocks_availabilities(self, availability_facade: AvailabilityFacade) -> None:
-        resource_id = ResourceAvailabilityId.new_one()
+        resource_id = ResourceId.new_one()
         one_day = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
         owner = Owner.new_one()
         availability_facade.create_resource_slots(resource_id, one_day)
@@ -52,7 +52,7 @@ class TestAvailabilityFacade:
         assert availabilities.blocked_entirely_by(owner)
 
     def test_disable_availabilities(self, availability_facade: AvailabilityFacade) -> None:
-        resource_id = ResourceAvailabilityId.new_one()
+        resource_id = ResourceId.new_one()
         one_day = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
         owner = Owner.new_one()
         availability_facade.create_resource_slots(resource_id, one_day)
@@ -67,7 +67,7 @@ class TestAvailabilityFacade:
     def test_cannot_block_when_even_just_small_segment_of_requested_slot_is_blocked(
         self, availability_facade: AvailabilityFacade
     ) -> None:
-        resource_id = ResourceAvailabilityId.new_one()
+        resource_id = ResourceId.new_one()
         one_day = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
         owner = Owner.new_one()
         availability_facade.create_resource_slots(resource_id, one_day)
@@ -81,7 +81,7 @@ class TestAvailabilityFacade:
         assert availabilites.blocked_entirely_by(owner)
 
     def test_release_availability(self, availability_facade: AvailabilityFacade) -> None:
-        resource_id = ResourceAvailabilityId.new_one()
+        resource_id = ResourceId.new_one()
         one_day = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
         fifteen_minutes = TimeSlot(one_day.from_, one_day.from_ + timedelta(minutes=15))
         owner = Owner.new_one()
@@ -97,7 +97,7 @@ class TestAvailabilityFacade:
     def test_cant_release_when_just_part_of_slot_is_owned_by_another_requester(
         self, availability_facade: AvailabilityFacade
     ) -> None:
-        resource_id = ResourceAvailabilityId.new_one()
+        resource_id = ResourceId.new_one()
         jan_1 = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
         jan_2 = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 2)
         jan_1_2 = TimeSlot(jan_1.from_, jan_2.to)
@@ -116,7 +116,7 @@ class TestAvailabilityFacade:
     def test_one_segment_can_taken_by_someone_else_after_releasing(
         self, availability_facade: AvailabilityFacade
     ) -> None:
-        resource_id = ResourceAvailabilityId.new_one()
+        resource_id = ResourceId.new_one()
         one_day = TimeSlot.create_daily_time_slot_at_utc(2021, 1, 1)
         fifteen_minutes = TimeSlot(one_day.from_, one_day.from_ + timedelta(minutes=15))
         owner = Owner.new_one()

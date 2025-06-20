@@ -3,7 +3,7 @@ from typing import Final
 
 import pytest
 
-from schedule.allocation.resource_id import ResourceId
+from schedule.availability.resource_id import ResourceId
 from schedule.shared.capability.capability import Capability
 from schedule.shared.resource_name import ResourceName
 from schedule.shared.timeslot.time_slot import TimeSlot

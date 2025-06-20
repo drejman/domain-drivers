@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import Final
 from uuid import uuid4
 
+from schedule.availability.resource_id import ResourceId
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
 
@@ -17,7 +18,6 @@ from ..events import (
 )
 from ..project_allocations import ProjectAllocations
 from ..project_allocations_id import ProjectAllocationsId
-from ..resource_id import ResourceId
 
 
 class TestAllocationsToProject:

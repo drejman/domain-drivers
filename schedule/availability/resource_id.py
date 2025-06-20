@@ -8,7 +8,7 @@ import attrs as a
 
 @a.define(frozen=True, repr=False)
 class ResourceId:
-    _resource_id: UUID
+    _resource_id: UUID = a.field(alias="uuid")
 
     @property
     def id(self) -> UUID:

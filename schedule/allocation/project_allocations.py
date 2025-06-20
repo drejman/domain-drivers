@@ -5,6 +5,7 @@ from uuid import UUID
 
 import attrs as a
 
+from schedule.availability import ResourceId
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
 
@@ -18,7 +19,6 @@ from .events import (
     ProjectAllocationsDemandsScheduledEvent,
 )
 from .project_allocations_id import ProjectAllocationsId
-from .resource_id import ResourceId
 
 
 @a.define(slots=False)

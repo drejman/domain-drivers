@@ -49,12 +49,12 @@ utility = true
 
 [[modules ]]
 path = "schedule.allocation"
-depends_on = ["schedule.simulation"]
+depends_on = ["schedule.simulation", "schedule.availability"]
 
 [[modules ]]
 path = "schedule.availability"
 depends_on = []
 
 [[interfaces]]
-expose = ["AvailabilityFacade", "Calendars"]
+expose = ["AvailabilityFacade", "Calendars", "ResourceId"]
 from = ["schedule.availability"]

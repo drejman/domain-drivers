@@ -2,16 +2,17 @@ from __future__ import annotations
 
 import attrs as a
 
-from schedule.availability.blockade import Blockade
-from schedule.availability.owner import Owner
-from schedule.availability.resource_availability_id import ResourceAvailabilityId
-from schedule.availability.time_blocks.atomic_time_block import AtomicTimeBlock
+from .blockade import Blockade
+from .owner import Owner
+from .resource_availability_id import ResourceAvailabilityId
+from .resource_id import ResourceId
+from .time_blocks.atomic_time_block import AtomicTimeBlock
 
 
 @a.define(slots=False)
 class ResourceAvailability:
     _id: ResourceAvailabilityId
-    _resource_id: ResourceAvailabilityId = a.field(eq=False)
+    _resource_id: ResourceId = a.field(eq=False)
     _time_block: AtomicTimeBlock = a.field(eq=False)
     _blockade: Blockade = a.field(factory=Blockade.none, eq=False)
     _version: int = a.field(default=0, eq=False)

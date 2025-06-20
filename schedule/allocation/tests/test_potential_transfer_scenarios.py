@@ -3,6 +3,7 @@ from uuid import uuid4
 
 import pytest
 
+from schedule.availability.resource_id import ResourceId
 from schedule.optimization.optimization_facade import OptimizationFacade
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
@@ -14,7 +15,6 @@ from ..cashflow.earnings import Earnings
 from ..demand import Demand
 from ..demands import Demands
 from ..project_allocations_id import ProjectAllocationsId
-from ..resource_id import ResourceId
 from ..transfer_simulation_service import TransferSimulationService
 
 

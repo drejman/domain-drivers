@@ -1,6 +1,7 @@
 from datetime import UTC, datetime
 from uuid import UUID
 
+from schedule.availability import ResourceId
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
 
@@ -14,7 +15,6 @@ from .projects_allocations_summary import (
 from .repository.allocation_sqla_repository import (
     ProjectAllocationsRepository,
 )
-from .resource_id import ResourceId
 
 
 class AllocationFacade:

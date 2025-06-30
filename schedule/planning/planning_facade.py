@@ -91,7 +91,7 @@ class PlanningFacade:
         self,
         project_id: ProjectId,
         critical_stage: Stage,
-        resource_name: ResourceId,  # pyright: ignore [reportUnusedParameter]  # noqa: ARG002
+        resource_id: ResourceId,  # pyright: ignore [reportUnusedParameter]  # noqa: ARG002
         stage_time_slot: TimeSlot,
     ) -> None:
         project = self._project_repository.get(id=project_id)

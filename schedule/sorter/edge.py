@@ -16,3 +16,11 @@ class Edge[T]:
     @override
     def __str__(self) -> str:
         return f"({self._source.name} -> {self._target.name})"
+
+    @property
+    def source(self) -> Node[T]:
+        return self._source
+
+    @property
+    def target(self) -> Node[T]:
+        return self._target

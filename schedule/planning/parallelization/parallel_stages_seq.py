@@ -12,7 +12,7 @@ def convert_all(all_: Iterable[ParallelStages]) -> tuple[ParallelStages, ...]:
     return tuple(all_)
 
 
-@a.define(frozen=True)
+@a.define(frozen=True, str=False)
 class ParallelStagesSequence:
     _all: tuple[ParallelStages, ...] = a.field(factory=tuple, converter=convert_all)
 

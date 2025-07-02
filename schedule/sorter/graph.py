@@ -44,3 +44,18 @@ class Graph[T]:
             return tuple(edges)
         else:
             return ()
+
+    def minimum_feedback_arc_set(self) -> tuple[Edge[T], ...]:
+        # TODO: consider case for more than one edge to be removed  # noqa: FIX002, TD002
+        fas = self.feedback_arc_set()
+        if not fas:
+            return fas
+        result: list[Edge[T]] = []
+        for edge in fas:
+            self.nodes[edge.target].remove(edge.source)
+            new_fas = self.feedback_arc_set()
+            if not new_fas:
+                return (edge,)
+            result.append(edge)
+            self.nodes[edge.target].add(edge.source)
+        return tuple(result)

@@ -18,7 +18,7 @@ while maintaining **developer ergonomics** and **simplicity** in CRUD modules.
 ## Decision
 We will adopt the following mapping strategy:
 - Use **imperative (classical) mapping** for modules with **rich domain models**:
-  - Domain entities will be **pure Python classes**, decoupled from the ORM.
+  - Domain entities will be **pure Python classes** (using `attrs` package), decoupled from the ORM.
   - SQLAlchemy mapping will be done via `registry().map_imperatively(...)` in a dedicated persistence layer.
   - This supports unit testing, domain isolation, and DDD-friendly patterns.
 

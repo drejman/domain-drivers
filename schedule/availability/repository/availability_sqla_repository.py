@@ -63,7 +63,7 @@ class ResourceAvailabilityRepository(SQLAlchemyRepository[ResourceAvailability, 
             case ResourceAvailability():
                 super().add(model=model)
             case GroupedResourceAvailability():
-                self.add_many(model.resource_availabilities)
+                self.add_all(model.resource_availabilities)
 
     def load_all_within_slot(
         self, resource_id: ResourceId, time_slot: NormalizedSlot

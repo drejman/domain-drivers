@@ -52,6 +52,10 @@ path = "schedule.allocation"
 depends_on = ["schedule.simulation", "schedule.availability"]
 
 [[modules ]]
+path = "schedule.allocation.capability_scheduling"
+depends_on = ["schedule.availability", "schedule.resource"]
+
+[[modules ]]
 path = "schedule.availability"
 depends_on = []
 

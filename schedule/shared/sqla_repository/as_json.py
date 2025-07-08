@@ -5,8 +5,7 @@ from uuid import UUID
 
 from cattrs.preconf.json import JsonConverter, make_converter  # pyright: ignore[reportUnknownVariableType]
 from sqlalchemy import Dialect, types
-
-from schedule.shared.typing_extensions import JSON
+from sqlalchemy.dialects.postgresql import JSONB
 
 T = TypeVar("T")
 
@@ -39,7 +38,7 @@ def string_to_decimal(string: str, _: type) -> Decimal:
 class AsJSON[T](types.TypeDecorator[T]):
     """Will serialize to JSON and back everything that cattrs handles."""
 
-    impl = types.JSON
+    impl = JSONB
     cache_ok = True
 
     _converter: JsonConverter  # pyright: ignore[reportUninitializedInstanceVariable]
@@ -66,15 +65,15 @@ class AsJSON[T](types.TypeDecorator[T]):
         return cast(Self, specialized_class)
 
     @override
-    def process_bind_param(self, value: T | None, dialect: Dialect) -> JSON | None:
+    def process_bind_param(self, value: T | None, dialect: Dialect) -> JSONB | None:
         if value is None:
             return value
 
-        return cast(JSON, self._converter.dumps(value))
+        return cast(JSONB, self._converter.unstructure(value))
 
     @override
     def process_result_value(self, value: str | None, dialect: Dialect) -> T | None:
         if value is None:
             return value
 
-        return self._converter.loads(value, self._type)
+        return self._converter.structure(value, self._type)

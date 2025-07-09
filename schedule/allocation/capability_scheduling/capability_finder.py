@@ -1,3 +1,5 @@
+from collections.abc import Sequence
+
 from schedule.availability import AvailabilityFacade
 from schedule.shared.capability import Capability
 from schedule.shared.timeslot import TimeSlot
@@ -48,7 +50,7 @@ class CapabilityFinder:
         return self._create_summary(list(found))
 
     def _filter_availability_in_time_slot(
-        self, allocatable_capabilities: list[AllocatableCapability], time_slot: TimeSlot
+        self, allocatable_capabilities: Sequence[AllocatableCapability], time_slot: TimeSlot
     ) -> list[AllocatableCapability]:
         availability_ids = {
             allocatable_capability.id.to_availability_resource_id()
@@ -61,12 +63,12 @@ class CapabilityFinder:
             if time_slot in calendars.get(allocatable_capability.id.to_availability_resource_id()).available_slots()
         ]
 
-    def _create_summary(self, found: list[AllocatableCapability]) -> AllocatableCapabilitiesSummary:
+    def _create_summary(self, found: Sequence[AllocatableCapability]) -> AllocatableCapabilitiesSummary:
         summaries = [
             AllocatableCapabilitySummary(
                 allocatable_capability.id,
                 allocatable_capability.resource_id,
-                allocatable_capability.capability,
+                allocatable_capability.possible_capabilities,
                 allocatable_capability.time_slot,
             )
             for allocatable_capability in found

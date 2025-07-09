@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from enum import StrEnum, auto
 
 import attrs as a
@@ -12,9 +13,13 @@ class SelectingPolicy(StrEnum):
     ONE_OF_ALL = auto()
 
 
+def freeze_capabilities(capabilites: Iterable[Capability]) -> frozenset[Capability]:
+    return frozenset(capabilites)
+
+
 @a.frozen
 class CapabilitySelector:
-    capabilities: set[Capability]
+    capabilities: frozenset[Capability] = a.field(converter=freeze_capabilities)
     selecting_policy: SelectingPolicy
 
     @staticmethod
@@ -22,6 +27,10 @@ class CapabilitySelector:
         capabilities: set[Capability],
     ) -> CapabilitySelector:
         return CapabilitySelector(capabilities, SelectingPolicy.ALL_SIMULTANEOUSLY)
+
+    @staticmethod
+    def can_just_perform(capability: Capability) -> CapabilitySelector:
+        return CapabilitySelector({capability}, SelectingPolicy.ONE_OF_ALL)
 
     @staticmethod
     def can_perform_one_of(capabilities: set[Capability]) -> CapabilitySelector:

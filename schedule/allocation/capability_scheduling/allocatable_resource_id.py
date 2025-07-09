@@ -7,7 +7,7 @@ import attrs as a
 
 @a.frozen
 class AllocatableResourceId:
-    _resource_id: UUID
+    _resource_id: UUID = a.field(alias="uuid")
 
     @property
     def id(self) -> UUID:

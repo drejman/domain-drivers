@@ -2,12 +2,23 @@ from __future__ import annotations
 
 from datetime import UTC
 
-import factory  # type: ignore
+import factory
 
+from schedule.simulation.capability_performer import CapabilityPerformer  # type: ignore
+
+from ...shared.capability import Capability
 from ..available_resource_capability import (
     AvailableResourceCapability,
 )
 from ..simulated_capabilities import SimulatedCapabilities
+
+
+class FakeCapabilityPerformer(CapabilityPerformer):
+    def __init__(self, capability: Capability) -> None:
+        self._capability = capability
+
+    def perform(self, capability: Capability) -> bool:
+        return self._capability == capability
 
 
 class AvailableResourceCapabilityFactory(factory.Factory):  # type: ignore

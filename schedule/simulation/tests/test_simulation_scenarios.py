@@ -15,6 +15,7 @@ from ..project_id import ProjectId
 from ..simulation_facade import SimulationFacade
 from .available_capabilities_factory import (
     AvailableResourceCapabilityFactory,
+    FakeCapabilityPerformer,
     SimulatedCapabilitiesFactory,
 )
 from .simulated_projects_factory import (
@@ -89,10 +90,10 @@ class TestSimulationScenarios:
         simulated_availability = SimulatedCapabilitiesFactory.build(
             num_capabilities=2,
             capabilities__0__resource_id=staszek_id,
-            capabilities__0__capability=Capability.skill("JAVA-MID"),
+            capabilities__0__capability=FakeCapabilityPerformer(Capability.skill("JAVA-MID")),
             capabilities__0__time_slot=jan_1_time_slot,
             capabilities__1__resource_id=leon_id,
-            capabilities__1__capability=Capability.skill("JAVA-MID"),
+            capabilities__1__capability=FakeCapabilityPerformer(Capability.skill("JAVA-MID")),
             capabilities__1__time_slot=jan_1_time_slot,
         )
 
@@ -118,10 +119,10 @@ class TestSimulationScenarios:
         simulated_availability = SimulatedCapabilitiesFactory.build(
             num_capabilities=2,
             capabilities__0__resource_id=uuid4(),
-            capabilities__0__capability=Capability.skill("JAVA-MID"),
+            capabilities__0__capability=FakeCapabilityPerformer(Capability.skill("JAVA-MID")),
             capabilities__0__time_slot=jan_1_time_slot,
             capabilities__1__resource_id=uuid4(),
-            capabilities__1__capability=Capability.skill("JAVA-MID"),
+            capabilities__1__capability=FakeCapabilityPerformer(Capability.skill("JAVA-MID")),
             capabilities__1__time_slot=jan_1_time_slot,
         )
 
@@ -154,13 +155,13 @@ class TestSimulationScenarios:
         simulated_availability = SimulatedCapabilitiesFactory.build(
             num_capabilities=1,
             capabilities__0__resource_id=staszek_id,
-            capabilities__0__capability=Capability.skill("YT DRAMA COMMENTS"),
+            capabilities__0__capability=FakeCapabilityPerformer(Capability.skill("YT DRAMA COMMENTS")),
             capabilities__0__time_slot=jan_1_time_slot,
         )
 
         extra_capability = AvailableResourceCapabilityFactory.build(
             resource_id=uuid4(),
-            capability=Capability.skill("YT DRAMA COMMENTS"),
+            capability=FakeCapabilityPerformer(Capability.skill("YT DRAMA COMMENTS")),
             time_slot=jan_1_time_slot,
         )
 
@@ -198,17 +199,21 @@ class TestSimulationScenarios:
         simulated_availability = SimulatedCapabilitiesFactory.build(
             num_capabilities=1,
             capabilities__0__resource_id=staszek_id,
-            capabilities__0__capability=Capability.skill("JAVA-MID"),
+            capabilities__0__capability=FakeCapabilityPerformer(Capability.skill("JAVA-MID")),
             capabilities__0__time_slot=jan_1_time_slot,
         )
 
         slawek = AdditionalPricedCapability(
             Decimal(9999),
-            AvailableResourceCapability(uuid4(), Capability.skill("JAVA-MID"), jan_1_time_slot),
+            AvailableResourceCapability(
+                uuid4(), FakeCapabilityPerformer(Capability.skill("JAVA-MID")), jan_1_time_slot
+            ),
         )
         staszek = AdditionalPricedCapability(
             Decimal(3),
-            AvailableResourceCapability(uuid4(), Capability.skill("JAVA-MID"), jan_1_time_slot),
+            AvailableResourceCapability(
+                uuid4(), FakeCapabilityPerformer(Capability.skill("JAVA-MID")), jan_1_time_slot
+            ),
         )
 
         buying_slawek_profit = simulation_facade.profit_after_buying_new_capability(

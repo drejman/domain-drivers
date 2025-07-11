@@ -7,6 +7,8 @@ from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from testcontainers.postgres import PostgresContainer
 
+from schedule.allocation.allocation_facade import AllocationFacade
+from schedule.allocation.capability_scheduling.capability_scheduler import CapabilityScheduler
 from schedule.availability import AvailabilityFacade
 from schedule.shared.sqla_repository.mappers import mapper_registry
 
@@ -57,3 +59,13 @@ def container(session: Session) -> Container:
 @pytest.fixture
 def availability_facade(container: Container) -> AvailabilityFacade:
     return container.resolve(AvailabilityFacade)
+
+
+@pytest.fixture
+def allocation_facade(container: Container) -> AllocationFacade:
+    return container.resolve(AllocationFacade)
+
+
+@pytest.fixture
+def capability_scheduler(container: Container) -> CapabilityScheduler:
+    return container.resolve(CapabilityScheduler)

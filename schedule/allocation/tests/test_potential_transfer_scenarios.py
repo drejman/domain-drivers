@@ -1,8 +1,9 @@
 from datetime import timedelta
-from uuid import uuid4
 
 import pytest
 
+from schedule.allocation.capability_scheduling.allocatable_resource_id import AllocatableResourceId
+from schedule.allocation.tests.test_allocations_to_project import AllocatableCapabilityId
 from schedule.optimization.optimization_facade import OptimizationFacade
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
@@ -60,7 +61,12 @@ def insurance_soft_id() -> ProjectAllocationsId:
 
 @pytest.fixture
 def staszek_java_mid(jan_1: TimeSlot) -> AllocatedCapability:
-    return AllocatedCapability(uuid4(), Capability.skill("JAVA-MID"), jan_1)
+    return AllocatedCapability(AllocatableCapabilityId.new_one(), Capability.skill("JAVA-MID"), jan_1)
+
+
+@pytest.fixture
+def staszek_resource() -> AllocatableResourceId:
+    return AllocatableResourceId.new_one()
 
 
 @pytest.fixture
@@ -75,6 +81,7 @@ class TestPotentialTransferScenarios:
         banking_soft_id: ProjectAllocationsId,
         insurance_soft_id: ProjectAllocationsId,
         staszek_java_mid: AllocatedCapability,
+        staszek_resource: AllocatableResourceId,
         transfer_simulation_service: TransferSimulationService,
         allocation_facade: AllocationFacade,
         allocatable_resource_factory: AllocatableResourceFactory,
@@ -87,12 +94,16 @@ class TestPotentialTransferScenarios:
         )
         allocation_uuid = allocation_facade.allocate_to_project(
             project_id=banking_soft_id,
-            resource_id=allocatable_resource_factory(staszek_java_mid.time_slot),
+            allocatable_capability_id=allocatable_resource_factory(
+                staszek_java_mid.time_slot, staszek_java_mid.capability, staszek_resource
+            ),
             capability=staszek_java_mid.capability,
             time_slot=staszek_java_mid.time_slot,
         )
         summary = allocation_facade.find_projects_allocations_by_ids(banking_soft_id)
-        allocated_capability = summary.project_allocations[banking_soft_id].find(allocation_uuid)
+        allocated_capability = summary.project_allocations[banking_soft_id].find(
+            AllocatableCapabilityId(allocation_uuid)
+        )
         result = transfer_simulation_service.simulate_potential_transfer(
             project_from=banking_soft_id,
             project_to=insurance_soft_id,
@@ -111,6 +122,7 @@ class TestPotentialTransferScenarios:
         banking_soft_id: ProjectAllocationsId,
         insurance_soft_id: ProjectAllocationsId,
         staszek_java_mid: AllocatedCapability,
+        staszek_resource: AllocatableResourceId,
         fifteen_minutes_in_jan: TimeSlot,
         transfer_simulation_service: TransferSimulationService,
         allocation_facade: AllocationFacade,
@@ -124,12 +136,16 @@ class TestPotentialTransferScenarios:
         )
         allocation_uuid = allocation_facade.allocate_to_project(
             project_id=banking_soft_id,
-            resource_id=allocatable_resource_factory(staszek_java_mid.time_slot),
+            allocatable_capability_id=allocatable_resource_factory(
+                staszek_java_mid.time_slot, staszek_java_mid.capability, staszek_resource
+            ),
             capability=staszek_java_mid.capability,
             time_slot=staszek_java_mid.time_slot,
         )
         summary = allocation_facade.find_projects_allocations_by_ids(banking_soft_id)
-        allocated_capability = summary.project_allocations[banking_soft_id].find(allocation_uuid)
+        allocated_capability = summary.project_allocations[banking_soft_id].find(
+            AllocatableCapabilityId(allocation_uuid)
+        )
         result = transfer_simulation_service.simulate_potential_transfer(
             project_from=banking_soft_id,
             project_to=insurance_soft_id,
@@ -148,6 +164,7 @@ class TestPotentialTransferScenarios:
         banking_soft_id: ProjectAllocationsId,
         insurance_soft_id: ProjectAllocationsId,
         staszek_java_mid: AllocatedCapability,
+        staszek_resource: AllocatableResourceId,
         jan_1: TimeSlot,
         transfer_simulation_service: TransferSimulationService,
         allocation_facade: AllocationFacade,
@@ -161,12 +178,16 @@ class TestPotentialTransferScenarios:
         )
         allocation_uuid = allocation_facade.allocate_to_project(
             project_id=banking_soft_id,
-            resource_id=allocatable_resource_factory(staszek_java_mid.time_slot),
+            allocatable_capability_id=allocatable_resource_factory(
+                staszek_java_mid.time_slot, staszek_java_mid.capability, staszek_resource
+            ),
             capability=staszek_java_mid.capability,
             time_slot=staszek_java_mid.time_slot,
         )
         summary = allocation_facade.find_projects_allocations_by_ids(banking_soft_id)
-        allocated_capability = summary.project_allocations[banking_soft_id].find(allocation_uuid)
+        allocated_capability = summary.project_allocations[banking_soft_id].find(
+            AllocatableCapabilityId(allocation_uuid)
+        )
         result = transfer_simulation_service.simulate_potential_transfer(
             project_from=banking_soft_id,
             project_to=insurance_soft_id,

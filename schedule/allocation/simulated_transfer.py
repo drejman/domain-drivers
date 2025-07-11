@@ -29,7 +29,7 @@ class SimulatedProjectAllocations:
         self,
         project_from: ProjectAllocationsId,
         project_to: ProjectAllocationsId,
-        capability: AllocatedCapability,
+        allocated_capability: AllocatedCapability,
         for_slot: TimeSlot,
     ) -> SimulatedProjectAllocations:
         try:
@@ -38,13 +38,13 @@ class SimulatedProjectAllocations:
         except KeyError:
             return self
 
-        new_allocations_project_from = allocations_from.remove(capability.allocated_capability_id, for_slot)
+        new_allocations_project_from = allocations_from.remove(allocated_capability.allocated_capability_id, for_slot)
         if new_allocations_project_from == allocations_from:
             return self
         self._summary.project_allocations[project_from] = new_allocations_project_from
 
         new_allocations_project_to = allocations_to.add(
-            AllocatedCapability(capability.resource_id, capability.capability, for_slot)
+            AllocatedCapability(allocated_capability.allocated_capability_id, allocated_capability.capability, for_slot)
         )
         self._summary.project_allocations[project_to] = new_allocations_project_to
 

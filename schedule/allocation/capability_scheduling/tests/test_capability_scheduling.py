@@ -21,11 +21,6 @@ from ..capability_selector import CapabilitySelector
 
 
 @pytest.fixture
-def capability_scheduler(container: Container) -> CapabilityScheduler:
-    return container.resolve(CapabilityScheduler)
-
-
-@pytest.fixture
 def capability_finder(container: Container) -> CapabilityFinder:
     return container.resolve(CapabilityFinder)
 

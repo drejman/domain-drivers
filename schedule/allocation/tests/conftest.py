@@ -1,28 +1,30 @@
 from collections.abc import Callable
 
 import pytest
-from lagom import Container
 
-from ...availability import AvailabilityFacade, ResourceId
+from schedule.allocation.capability_scheduling.allocatable_capability_id import AllocatableCapabilityId
+from schedule.shared.capability.capability import Capability
+
 from ...shared.timeslot import TimeSlot
-from ..allocation_facade import AllocationFacade
+from ..capability_scheduling.allocatable_resource_id import AllocatableResourceId
+from ..capability_scheduling.capability_scheduler import CapabilityScheduler
+from ..capability_scheduling.capability_selector import CapabilitySelector
 
-
-@pytest.fixture
-def allocation_facade(container: Container) -> AllocationFacade:
-    return container.resolve(AllocationFacade)
-
-
-AllocatableResourceFactory = Callable[[TimeSlot], ResourceId]
+AllocatableResourceFactory = Callable[[TimeSlot, Capability, AllocatableResourceId], AllocatableCapabilityId]
 
 
 @pytest.fixture
 def allocatable_resource_factory(
-    availability_facade: AvailabilityFacade,
+    capability_scheduler: CapabilityScheduler,
 ) -> AllocatableResourceFactory:
-    def _create_allocatable_resource(period: TimeSlot) -> ResourceId:
-        resource_id = ResourceId.new_one()
-        availability_facade.create_resource_slots(resource_id, period)
-        return resource_id
+    def _create_allocatable_resource(
+        period: TimeSlot, capability: Capability, resource_id: AllocatableResourceId
+    ) -> AllocatableCapabilityId:
+        capabilities = [CapabilitySelector.can_just_perform(capability)]
+        allocatable_capability_ids = capability_scheduler.schedule_resource_capabilities_for_period(
+            resource_id=resource_id, time_slot=period, capabilities=capabilities
+        )
+        assert len(allocatable_capability_ids) == 1
+        return allocatable_capability_ids[0]
 
     return _create_allocatable_resource

@@ -1,7 +1,8 @@
 from datetime import UTC, datetime
 from uuid import UUID
 
-from schedule.availability import AvailabilityFacade, Owner, ResourceId
+from schedule.allocation.capability_scheduling import AllocatableCapabilityId
+from schedule.availability import AvailabilityFacade, Owner
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
 
@@ -43,22 +44,29 @@ class AllocationFacade:
     def allocate_to_project(
         self,
         project_id: ProjectAllocationsId,
-        resource_id: ResourceId,
+        allocatable_capability_id: AllocatableCapabilityId,
         capability: Capability,
         time_slot: TimeSlot,
     ) -> UUID | None:
         # TODO: add transaction  # noqa: FIX002, TD002
         owner = Owner(project_id.id)
-        if self._availability_facade.block(resource_id=resource_id, time_slot=time_slot, requester=owner) is False:
+        if (
+            self._availability_facade.block(
+                resource_id=allocatable_capability_id.to_availability_resource_id(),
+                time_slot=time_slot,
+                requester=owner,
+            )
+            is False
+        ):
             return None
         allocations = self._project_allocations_repository.get(project_id)
-        event = allocations.allocate(resource_id, capability, time_slot, datetime.now(tz=UTC))
+        event = allocations.allocate(allocatable_capability_id, capability, time_slot, datetime.now(tz=UTC))
         return event.allocated_capability_id if event is not None else None
 
     def release_from_project(
         self,
         project_id: ProjectAllocationsId,
-        allocatable_capability_id: UUID,
+        allocatable_capability_id: AllocatableCapabilityId,
         time_slot: TimeSlot,
     ) -> bool:
         # TODO: rethink and potentially add transaction  # noqa: FIX002, TD002

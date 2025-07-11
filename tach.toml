@@ -49,11 +49,15 @@ utility = true
 
 [[modules ]]
 path = "schedule.allocation"
-depends_on = ["schedule.simulation", "schedule.availability"]
+depends_on = ["schedule.simulation", "schedule.availability", "schedule.allocation.capability_scheduling"]
 
 [[modules ]]
 path = "schedule.allocation.capability_scheduling"
-depends_on = ["schedule.availability", "schedule.resource"]
+depends_on = ["schedule.availability"]
+
+[[interfaces]]
+expose = ["AllocatableCapabilityId"]
+from = ["schedule.allocation.capability_scheduling"]
 
 [[modules ]]
 path = "schedule.availability"

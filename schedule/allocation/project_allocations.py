@@ -1,16 +1,15 @@
 from __future__ import annotations
 
 from datetime import datetime
-from uuid import UUID
 
 import attrs as a
 
-from schedule.availability import ResourceId
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
 
 from .allocated_capability import AllocatedCapability
 from .allocations import Allocations
+from .capability_scheduling import AllocatableCapabilityId
 from .demands import Demands
 from .events import (
     CapabilitiesAllocatedEvent,
@@ -55,7 +54,7 @@ class ProjectAllocations:
 
     def allocate(
         self,
-        resource_id: ResourceId,
+        allocatable_capability_id: AllocatableCapabilityId,
         capability: Capability,
         requested_slot: TimeSlot,
         when: datetime,
@@ -64,7 +63,7 @@ class ProjectAllocations:
             return None
 
         allocated_capability = AllocatedCapability(
-            resource_id=resource_id.id, capability=capability, time_slot=requested_slot
+            allocated_capability_id=allocatable_capability_id, capability=capability, time_slot=requested_slot
         )
         new_allocations = self._allocations.add(allocated_capability)
         if self._nothing_allocated(new_allocations):
@@ -72,7 +71,7 @@ class ProjectAllocations:
         self._allocations = new_allocations
 
         return CapabilitiesAllocatedEvent(
-            allocated_capability_id=allocated_capability.allocated_capability_id,
+            allocated_capability_id=allocated_capability.allocated_capability_id.id,
             project_id=self._project_id,
             missing_demands=self._demands.missing_demands(self._allocations),
             occurred_at=when,
@@ -87,7 +86,7 @@ class ProjectAllocations:
         return requested_slot.within(self._time_slot)
 
     def release(
-        self, allocated_capability_id: UUID, time_slot: TimeSlot, when: datetime
+        self, allocated_capability_id: AllocatableCapabilityId, time_slot: TimeSlot, when: datetime
     ) -> CapabilityReleasedEvent | None:
         new_allocations = self._allocations.remove(to_remove=allocated_capability_id, time_slot=time_slot)
         if self._nothing_released(new_allocations):

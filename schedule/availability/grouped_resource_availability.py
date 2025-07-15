@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 import attrs as a
 
@@ -13,18 +14,39 @@ from .resource_id import ResourceId
 from .time_blocks.atomic_time_block import AtomicTimeBlock
 from .time_blocks.duration_unit import DurationUnit
 
+if TYPE_CHECKING:
+    from attr import Attribute
+
 
 def _convert_sequence_to_list(resource_availabilities: Sequence[ResourceAvailability]) -> list[ResourceAvailability]:
     return list(resource_availabilities)
 
 
+def _validate_all_resource_availabilities_have_the_same_resource_id(
+    instance: GroupedResourceAvailability,  # pyright: ignore [reportUnusedParameter]  # noqa: ARG001
+    attribute: Attribute[list[ResourceAvailability]],  # pyright: ignore [reportUnusedParameter]  # noqa: ARG001
+    value: list[ResourceAvailability],
+) -> None:
+    if not all(resource_availability.resource_id == value[0].resource_id for resource_availability in value):
+        msg = "Resource ids do not match"
+        raise ValueError(msg)
+
+
 @a.define
 class GroupedResourceAvailability:
-    _resource_availabilities: list[ResourceAvailability] = a.field(converter=_convert_sequence_to_list)
+    _resource_availabilities: list[ResourceAvailability] = a.field(
+        converter=_convert_sequence_to_list, validator=_validate_all_resource_availabilities_have_the_same_resource_id
+    )
 
     @property
     def resource_availabilities(self) -> list[ResourceAvailability]:
         return self._resource_availabilities
+
+    @property
+    def resource_id(self) -> ResourceId | None:
+        if self.resource_availabilities:
+            return self.resource_availabilities[0].resource_id
+        return None
 
     @staticmethod
     def of(

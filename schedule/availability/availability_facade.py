@@ -1,3 +1,5 @@
+from collections.abc import Iterable
+
 from schedule.shared.timeslot.time_slot import TimeSlot
 
 from .calendar import Calendar
@@ -36,9 +38,22 @@ class AvailabilityFacade:
     def block(self, resource_id: ResourceId, time_slot: TimeSlot, requester: Owner) -> bool:
         """Reserve the resource for given time_slot and set the owner of this reservation to the requester."""
         grouped = self.find(resource_id=resource_id, time_slot=time_slot)
-        result = grouped.block(requester=requester)
+        return self._block(grouped, requester)
+
+    def block_random_available(
+        self, resource_ids: Iterable[ResourceId], within: TimeSlot, requester: Owner
+    ) -> ResourceId | None:
+        time_slot = NormalizedSlot.from_time_slot(time_slot=within, duration_unit=self._duration_unit)
+        grouped_availability = GroupedResourceAvailability(
+            self._repository.load_availabilities_of_random_resources_within(time_slot, *resource_ids)
+        )
+        result = self._block(grouped_availability, requester)
+        return grouped_availability.resource_id if result is True else None
+
+    def _block(self, to_block: GroupedResourceAvailability, requester: Owner) -> bool:
+        result = to_block.block(requester=requester)
         if result is True:
-            self._repository.add(grouped)
+            self._repository.add(to_block)
         return result
 
     def release(self, resource_id: ResourceId, time_slot: TimeSlot, requester: Owner) -> bool:
@@ -47,6 +62,10 @@ class AvailabilityFacade:
         result = grouped.release(requester=requester)
         if result is True:
             self._repository.add(grouped)
+        else:
+            self._repository.expire(
+                grouped
+            )  # TODO: probably not needed once transactions with proper rollbacks are added  # noqa: FIX002, TD002
         return result
 
     def disable(self, resource_id: ResourceId, time_slot: TimeSlot, requester: Owner) -> bool:

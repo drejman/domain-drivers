@@ -22,6 +22,10 @@ class ResourceAvailability:
         return self._id
 
     @property
+    def resource_id(self) -> ResourceId:
+        return self._resource_id
+
+    @property
     def blocked_by(self) -> Owner:
         return self._blockade.taken_by
 

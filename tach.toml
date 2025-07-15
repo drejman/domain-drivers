@@ -56,7 +56,7 @@ path = "schedule.allocation.capability_scheduling"
 depends_on = ["schedule.availability"]
 
 [[interfaces]]
-expose = ["AllocatableCapabilityId"]
+expose = ["AllocatableCapabilityId", "CapabilityFinder"]
 from = ["schedule.allocation.capability_scheduling"]
 
 [[modules ]]

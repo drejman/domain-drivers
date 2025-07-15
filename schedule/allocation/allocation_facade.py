@@ -1,12 +1,12 @@
 from datetime import UTC, datetime
 from uuid import UUID
 
-from schedule.allocation.capability_scheduling import AllocatableCapabilityId
 from schedule.availability import AvailabilityFacade, Owner
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
 
 from .allocations import Allocations
+from .capability_scheduling import AllocatableCapabilityId, CapabilityFinder
 from .demands import Demands
 from .project_allocations import ProjectAllocations
 from .project_allocations_id import ProjectAllocationsId
@@ -23,9 +23,11 @@ class AllocationFacade:
         self,
         project_allocations_repository: ProjectAllocationsRepository,
         availability_facade: AvailabilityFacade,
+        capability_finder: CapabilityFinder,
     ) -> None:
         self._project_allocations_repository: ProjectAllocationsRepository = project_allocations_repository
         self._availability_facade: AvailabilityFacade = availability_facade
+        self._capability_finder: CapabilityFinder = capability_finder
 
     def create_allocation(self, time_slot: TimeSlot, scheduled_demands: Demands) -> ProjectAllocationsId:
         project_id = ProjectAllocationsId.new_one()
@@ -50,6 +52,8 @@ class AllocationFacade:
     ) -> UUID | None:
         # TODO: add transaction  # noqa: FIX002, TD002
         owner = Owner(project_id.id)
+        if not self._capability_finder.is_present(allocatable_capability_id):
+            return None
         if (
             self._availability_facade.block(
                 resource_id=allocatable_capability_id.to_availability_resource_id(),
@@ -61,6 +65,9 @@ class AllocationFacade:
             return None
         allocations = self._project_allocations_repository.get(project_id)
         event = allocations.allocate(allocatable_capability_id, capability, time_slot, datetime.now(tz=UTC))
+        self._project_allocations_repository.add(
+            allocations
+        )  # TODO: this shouldn't be needed, but SQLA fails to fetch updated in-memory state without it  # noqa: FIX002, TD002, E501
         return event.allocated_capability_id if event is not None else None
 
     def release_from_project(
@@ -69,7 +76,14 @@ class AllocationFacade:
         allocatable_capability_id: AllocatableCapabilityId,
         time_slot: TimeSlot,
     ) -> bool:
+        # Can release not scheduled capability - at least for now.
+        # Hence no check to CapabilityFinder
         # TODO: rethink and potentially add transaction  # noqa: FIX002, TD002
+        _ = self._availability_facade.release(
+            resource_id=allocatable_capability_id.to_availability_resource_id(),
+            time_slot=time_slot,
+            requester=Owner(project_id.id),
+        )
         allocations = self._project_allocations_repository.get(project_id)
         event = allocations.release(allocatable_capability_id, time_slot, datetime.now(tz=UTC))
         return event is not None

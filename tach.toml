@@ -56,12 +56,16 @@ path = "schedule.allocation.capability_scheduling"
 depends_on = ["schedule.availability"]
 
 [[interfaces]]
-expose = ["AllocatableCapabilitiesSummary", "AllocatableCapabilityId", "CapabilityFinder"]
+expose = ["AllocatableCapabilitiesSummary", "AllocatableCapabilityId", "AllocatableResourceId", "CapabilityFinder", "CapabilityScheduler", "CapabilitySelector"]
 from = ["schedule.allocation.capability_scheduling"]
 
 [[modules ]]
 path = "schedule.availability"
 depends_on = []
+
+[[modules ]]
+path = "schedule.allocation.capability_scheduling.legacy_acl"
+depends_on = ["schedule.allocation.capability_scheduling"]
 
 [[interfaces]]
 expose = ["AvailabilityFacade", "Calendars", "Owner", "ResourceId"]

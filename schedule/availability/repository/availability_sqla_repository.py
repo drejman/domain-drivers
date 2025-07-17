@@ -1,5 +1,6 @@
 import uuid
 from collections.abc import Sequence
+from functools import singledispatchmethod
 from typing import overload, override
 
 from sqlalchemy import Boolean, Column, DateTime, Integer, Table, UniqueConstraint, select
@@ -60,11 +61,20 @@ class ResourceAvailabilityRepository(SQLAlchemyRepository[ResourceAvailability, 
 
     @override
     def add(self, model: ResourceAvailability | GroupedResourceAvailability) -> None:
-        match model:
-            case ResourceAvailability():
-                super().add(model=model)
-            case GroupedResourceAvailability():
-                self.add_all(model.resource_availabilities)
+        return self._add(model)
+
+    @singledispatchmethod
+    def _add(self, model: ResourceAvailability | GroupedResourceAvailability) -> None:
+        msg = f"Cannot add type {type(model)}, supported types: {ResourceAvailability | GroupedResourceAvailability}"
+        raise NotImplementedError(msg)
+
+    @_add.register
+    def _add_single(self, model: ResourceAvailability) -> None:
+        super().add(model=model)
+
+    @_add.register
+    def _add_grouped(self, model: GroupedResourceAvailability) -> None:
+        self.add_all(model.resource_availabilities)
 
     def load_all_within_slot(
         self, resource_id: ResourceId, time_slot: NormalizedSlot

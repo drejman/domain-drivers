@@ -10,46 +10,14 @@ source_roots = [
 ]
 forbid_circular_dependencies = true
 
-[[modules ]]
-path = "schedule.sorter"
-depends_on = []
-
-[[interfaces]]
-expose = ["Graph", "Node"]
-from = ["schedule.sorter"]
-
-[[modules ]]
-path = "schedule.simulation"
-depends_on = ["schedule.optimization"]
-
-[[interfaces]]
-expose = ["Demand", "Demands", "ProjectId", "SimulatedCapabilities", "SimulationFacade", "SimulatedProject"]
-from = ["schedule.simulation"]
-
-[[modules ]]
-path = "schedule.planning"
-depends_on = ["schedule.sorter", "schedule.availability"]
-
-[[interfaces]]
-expose = []
-from = ["schedule.planning"]
-
-[[modules ]]
-path = "schedule.optimization"
-depends_on = []
-
-[[interfaces]]
-expose = ["Item", "OptimizationFacade", "TotalCapacity", "TotalWeight"]
-from = ["schedule.optimization"]
-
-[[modules ]]
-path = "schedule.shared"
-depends_on = []
-utility = true
 
 [[modules ]]
 path = "schedule.allocation"
 depends_on = ["schedule.simulation", "schedule.availability", "schedule.allocation.capability_scheduling"]
+
+[[interfaces]]
+expose = ["AllocationFacade"]
+from = ["schedule.allocation"]
 
 [[modules ]]
 path = "schedule.allocation.capability_scheduling"
@@ -60,13 +28,71 @@ expose = ["AllocatableCapabilitiesSummary", "AllocatableCapabilityId", "Allocata
 from = ["schedule.allocation.capability_scheduling"]
 
 [[modules ]]
-path = "schedule.availability"
-depends_on = []
-
-[[modules ]]
 path = "schedule.allocation.capability_scheduling.legacy_acl"
 depends_on = ["schedule.allocation.capability_scheduling"]
 
 [[interfaces]]
+expose = []
+from = ["schedule.allocation.capability_scheduling.legacy_acl"]
+
+[[modules ]]
+path = "schedule.availability"
+depends_on = []
+
+[[interfaces]]
 expose = ["AvailabilityFacade", "Calendars", "Owner", "ResourceId"]
 from = ["schedule.availability"]
+
+[[modules ]]
+path = "schedule.optimization"
+depends_on = []
+
+[[interfaces]]
+expose = ["Item", "OptimizationFacade", "TotalCapacity", "TotalWeight"]
+from = ["schedule.optimization"]
+
+[[modules ]]
+path = "schedule.planning"
+depends_on = ["schedule.sorter", "schedule.availability"]
+
+[[interfaces]]
+expose = []
+from = ["schedule.planning"]
+
+[[modules ]]
+path = "schedule.resource"
+depends_on = []
+
+[[interfaces]]
+expose = ["DeviceId", "DeviceSummary", "EmployeeId", "EmployeeSummary", "ResourceFacade", "Seniority"]
+from = ["schedule.resource"]
+
+[[modules ]]
+path = "schedule.resource_scheduling"
+depends_on = ["schedule.allocation.capability_scheduling", "schedule.resource"]
+
+[[interfaces]]
+expose = ["ResourceSchedulingFacade"]
+from = ["schedule.resource_scheduling"]
+
+
+[[modules ]]
+path = "schedule.shared"
+depends_on = []
+utility = true
+
+[[modules ]]
+path = "schedule.simulation"
+depends_on = ["schedule.optimization"]
+
+[[interfaces]]
+expose = ["Demand", "Demands", "ProjectId", "SimulatedCapabilities", "SimulationFacade", "SimulatedProject"]
+from = ["schedule.simulation"]
+
+[[modules ]]
+path = "schedule.sorter"
+depends_on = []
+
+[[interfaces]]
+expose = ["Graph", "Node"]
+from = ["schedule.sorter"]

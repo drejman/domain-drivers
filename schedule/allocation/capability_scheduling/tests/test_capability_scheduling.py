@@ -1,7 +1,6 @@
 from datetime import timedelta
 
 import pytest
-from lagom import Container
 
 from schedule.availability.availability_facade import AvailabilityFacade
 from schedule.availability.resource_id import ResourceId
@@ -18,11 +17,6 @@ from ..capability_scheduler import (
     CapabilityScheduler,
 )
 from ..capability_selector import CapabilitySelector
-
-
-@pytest.fixture
-def capability_finder(container: Container) -> CapabilityFinder:
-    return container.resolve(CapabilityFinder)
 
 
 class AvailabilityAssert:

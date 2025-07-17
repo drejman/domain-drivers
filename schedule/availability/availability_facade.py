@@ -26,7 +26,9 @@ class AvailabilityFacade:
             duration_unit = DurationUnit.default()
         self._duration_unit: DurationUnit = duration_unit
 
-    def create_resource_slots(self, resource_id: ResourceId, time_slot: TimeSlot) -> None:
+    def create_resource_slots(
+        self, resource_id: ResourceId, time_slot: TimeSlot
+    ) -> None:  # TODO: check usages and add parent  # noqa: FIX002, TD002
         """Create and persist availability slots for given resource over provided time_slot."""
         grouped_availability = GroupedResourceAvailability.of(
             resource_id=resource_id,

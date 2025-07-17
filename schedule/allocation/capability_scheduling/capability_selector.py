@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from collections.abc import Set as AbstractSet
 from enum import StrEnum, auto
 
 import attrs as a
@@ -24,7 +25,7 @@ class CapabilitySelector:
 
     @staticmethod
     def can_perform_all_at_the_time(
-        capabilities: set[Capability],
+        capabilities: AbstractSet[Capability],
     ) -> CapabilitySelector:
         return CapabilitySelector(capabilities, SelectingPolicy.ALL_SIMULTANEOUSLY)
 
@@ -33,7 +34,7 @@ class CapabilitySelector:
         return CapabilitySelector({capability}, SelectingPolicy.ONE_OF_ALL)
 
     @staticmethod
-    def can_perform_one_of(capabilities: set[Capability]) -> CapabilitySelector:
+    def can_perform_one_of(capabilities: AbstractSet[Capability]) -> CapabilitySelector:
         return CapabilitySelector(capabilities, SelectingPolicy.ONE_OF_ALL)
 
     def can_perform(self, *capabilities: Capability) -> bool:

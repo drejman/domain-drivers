@@ -1,7 +1,7 @@
 import uuid
 from collections.abc import Sequence
 from functools import singledispatchmethod
-from typing import overload, override
+from typing import cast, overload, override
 
 from sqlalchemy import Boolean, Column, DateTime, Integer, Table, UniqueConstraint, select
 from sqlalchemy.dialects.postgresql import UUID
@@ -88,8 +88,7 @@ class ResourceAvailabilityRepository(SQLAlchemyRepository[ResourceAvailability, 
 
     def load_by_id(self, resource_availability_id: ResourceAvailabilityId) -> ResourceAvailability:
         stmt = select(ResourceAvailability).where(availabilities.c.id == resource_availability_id)
-        availability: ResourceAvailability = self._session.execute(stmt).one()[0]
-        return availability
+        return cast("ResourceAvailability", self._session.execute(stmt).one()[0])
 
     def load_availabilities_of_random_resources_within(
         self, time_slot: NormalizedSlot, *resource_ids: ResourceId

@@ -30,7 +30,8 @@ class Calendar:
     @staticmethod
     def with_available_slots(resource_id: ResourceId, *available_slots: TimeSlot) -> Calendar:
         return Calendar(
-            resource_id=resource_id, calendar=cast(Mapping[Owner, Sequence[TimeSlot]], {Owner.none(): available_slots})
+            resource_id=resource_id,
+            calendar=cast("Mapping[Owner, Sequence[TimeSlot]]", {Owner.none(): available_slots}),
         )
 
     def available_slots(self) -> TimeSlots:

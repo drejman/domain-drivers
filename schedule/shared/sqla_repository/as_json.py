@@ -3,7 +3,7 @@ from decimal import Decimal
 from typing import Self, TypeVar, cast, final, override
 from uuid import UUID
 
-from cattrs.preconf.json import JsonConverter, make_converter  # pyright: ignore[reportUnknownVariableType]
+from cattrs.preconf.json import JsonConverter, make_converter
 from sqlalchemy import Dialect, types
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -62,14 +62,14 @@ class AsJSON[T](types.TypeDecorator[T]):
             (cls,),
             {"_converter": converter, "_type": type_},
         )
-        return cast(Self, specialized_class)
+        return cast("Self", specialized_class)
 
     @override
     def process_bind_param(self, value: T | None, dialect: Dialect) -> JSONB | None:
         if value is None:
             return value
 
-        return cast(JSONB, self._converter.unstructure(value))
+        return cast("JSONB", self._converter.unstructure(value))
 
     @override
     def process_result_value(self, value: str | None, dialect: Dialect) -> T | None:

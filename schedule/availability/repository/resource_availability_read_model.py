@@ -56,7 +56,7 @@ class ResourceAvailabilityReadModel:
         calendars: dict[ResourceId, dict[Owner, list[TimeSlot]]] = defaultdict(lambda: defaultdict(list))
 
         stmt = self._stmt(resource_ids, within)
-        rows: Sequence[ReadModelRow] = cast(Sequence[ReadModelRow], self._session.execute(stmt).all())
+        rows: Sequence[ReadModelRow] = cast("Sequence[ReadModelRow]", self._session.execute(stmt).all())
 
         for row in rows:
             key = ResourceId(row.resource_id)
@@ -139,7 +139,7 @@ class ResourceAvailabilityReadModel:
             .order_by("start_date")
         )
 
-        return cast(Select[ReadModelRow], stmt)
+        return cast("Select[ReadModelRow]", stmt)
 
 
 class ReadModelRow(NamedTuple):

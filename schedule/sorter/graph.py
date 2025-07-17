@@ -1,7 +1,7 @@
 import itertools
 from collections.abc import Iterable
 from graphlib import CycleError, TopologicalSorter
-from typing import TypeVar
+from typing import TypeVar, cast
 
 from .edge import Edge
 from .node import Node
@@ -37,7 +37,7 @@ class Graph[T]:
         try:
             _ = self.topological_sort()
         except CycleError as e:
-            nodes: list[Node[T]] = e.args[1]
+            nodes = cast("list[Node[T]]", e.args[1])
             edges: list[Edge[T]] = []
             for source, target in itertools.pairwise(nodes[:-1]):
                 edges.append(Edge(source, target))

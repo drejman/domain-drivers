@@ -31,7 +31,7 @@ class SQLAlchemyRepository[TModel, TIdentity]:
             (cls,),
             {"_type": model_type, "_pk_col": pk_col},
         )
-        return cast(Self, specialized_class)
+        return cast("Self", specialized_class)
 
     def __init__(self, session: Session) -> None:
         self._session: Session = session

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Final
 
 from schedule.allocation.capability_scheduling.allocatable_capability_id import AllocatableCapabilityId
@@ -20,7 +20,7 @@ from ..project_allocations_id import ProjectAllocationsId
 
 
 class TestAllocationsToProject:
-    WHEN: Final = datetime.min
+    WHEN: Final = datetime.min.replace(tzinfo=UTC)
     PROJECT_ID: Final = ProjectAllocationsId.new_one()
     ADMIN_ID: Final = AllocatableCapabilityId.new_one()
     FEB_1: Final = TimeSlot.create_daily_time_slot_at_utc(2020, 2, 1)

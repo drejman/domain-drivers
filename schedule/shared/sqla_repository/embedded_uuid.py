@@ -33,7 +33,7 @@ class EmbeddedUUID[T: EmbeddableUUID](types.TypeDecorator[T]):
             (cls,),
             {"_type": type_, "cache_ok": True},
         )
-        return cast(Self, specialized_class)
+        return cast("Self", specialized_class)
 
     @override
     def process_bind_param(self, value: T | None, dialect: Dialect) -> UUID | None:

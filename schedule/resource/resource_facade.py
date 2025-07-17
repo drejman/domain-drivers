@@ -6,8 +6,8 @@ from schedule.resource.employee import EmployeeFacade, EmployeeId, Seniority
 from schedule.resource.employee.employee_summary import EmployeeSummary
 from schedule.shared.capability import Capability
 
-ResourceId = DeviceId | EmployeeId
-ResourceSummary = DeviceSummary | EmployeeSummary
+type ResourceId = DeviceId | EmployeeId
+type ResourceSummary = DeviceSummary | EmployeeSummary
 
 
 class ResourceFacade:

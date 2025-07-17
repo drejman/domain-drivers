@@ -7,7 +7,7 @@ from schedule.shared.timeslot import TimeSlot
 from .device_capabilities_scheduler import DeviceCapabilitiesScheduler
 from .employee_capabilities_scheduler import EmployeeCapabilitiesScheduler
 
-ResourceId = DeviceId | EmployeeId
+type ResourceId = DeviceId | EmployeeId
 
 
 class ResourceSchedulingFacade:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import datetime
 from typing import override
 
@@ -8,6 +9,7 @@ from schedule.shared.timeslot import TimeSlot
 from .duration_unit import DurationUnit
 
 
+@dataclass(frozen=True)
 class NormalizedSlot(TimeSlot):
     @classmethod
     def from_time_slot(cls, time_slot: TimeSlot, duration_unit: DurationUnit) -> NormalizedSlot:
@@ -17,6 +19,10 @@ class NormalizedSlot(TimeSlot):
     @override
     def __eq__(self, other: object) -> bool:
         return TimeSlot(from_=self.from_, to=self.to) == other
+
+    @override
+    def __hash__(self) -> int:
+        return hash((self.from_, self.to))
 
 
 class TimeSlotNormalizer:

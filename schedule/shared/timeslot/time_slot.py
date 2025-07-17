@@ -6,14 +6,14 @@ from datetime import UTC, date, datetime, time, timedelta
 from dateutil import relativedelta
 
 
-@dataclass(frozen=True, eq=True)
+@dataclass(frozen=True, eq=True)  # not an attrs class due to sqlalchemy mapping - maybe can be fixed
 class TimeSlot:
     from_: datetime
     to: datetime
 
     @staticmethod
     def empty() -> TimeSlot:
-        return TimeSlot(datetime.min, datetime.min)
+        return TimeSlot(datetime.min.replace(tzinfo=UTC), datetime.min.replace(tzinfo=UTC))
 
     @classmethod
     def create_daily_time_slot_at_utc(cls, year: int, month: int, day: int) -> TimeSlot:

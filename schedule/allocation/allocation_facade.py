@@ -5,11 +5,13 @@ from schedule.allocation.capability_scheduling import AllocatableCapabilitiesSum
 from schedule.allocation.events import CapabilitiesAllocatedEvent
 from schedule.availability import AvailabilityFacade, Owner, ResourceId
 from schedule.shared.capability.capability import Capability
+from schedule.shared.event import EventPublisher
 from schedule.shared.timeslot.time_slot import TimeSlot
 
 from .allocations import Allocations
 from .capability_scheduling import AllocatableCapabilityId, CapabilityFinder
 from .demands import Demands
+from .events import ProjectAllocationScheduledEvent
 from .project_allocations import ProjectAllocations
 from .project_allocations_id import ProjectAllocationsId
 from .projects_allocations_summary import (
@@ -26,15 +28,18 @@ class AllocationFacade:
         project_allocations_repository: ProjectAllocationsRepository,
         availability_facade: AvailabilityFacade,
         capability_finder: CapabilityFinder,
+        event_publisher: EventPublisher,
     ) -> None:
         self._project_allocations_repository: ProjectAllocationsRepository = project_allocations_repository
         self._availability_facade: AvailabilityFacade = availability_facade
         self._capability_finder: CapabilityFinder = capability_finder
+        self._event_publisher: EventPublisher = event_publisher
 
     def create_allocation(self, time_slot: TimeSlot, scheduled_demands: Demands) -> ProjectAllocationsId:
         project_id = ProjectAllocationsId.new_one()
         project_allocations = ProjectAllocations(project_id, Allocations.none(), scheduled_demands, time_slot)
         self._project_allocations_repository.add(project_allocations)
+        self._event_publisher.publish(ProjectAllocationScheduledEvent(project_id=project_id, from_to=time_slot))
         return project_id
 
     def find_projects_allocations_by_ids(self, *project_ids: ProjectAllocationsId) -> ProjectsAllocationsSummary:
@@ -146,11 +151,13 @@ class AllocationFacade:
     def edit_project_dates(self, project_id: ProjectAllocationsId, from_to: TimeSlot) -> None:
         allocations = self._project_allocations_repository.get(project_id)
         _ = allocations.define_slot(from_to, datetime.now(tz=UTC))
+        self._event_publisher.publish(ProjectAllocationScheduledEvent(project_id, from_to))
 
     def schedule_project_allocations_demands(self, project_id: ProjectAllocationsId, demands: Demands) -> None:
         try:
             allocations = self._project_allocations_repository.get(project_id)
         except self._project_allocations_repository.NotFoundError:
             allocations = ProjectAllocations.empty(project_id)
-        _ = allocations.add_demands(demands, datetime.now(tz=UTC))
+        event = allocations.add_demands(demands, datetime.now(tz=UTC))
         self._project_allocations_repository.add(allocations)
+        self._event_publisher.publish(event)

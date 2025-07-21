@@ -2,8 +2,10 @@ from datetime import date
 from typing import final
 
 from schedule.availability import ResourceId
+from schedule.planning.events import CapabilitiesDemandedEvent, CriticalStagePlannedEvent
 from schedule.shared.timeslot import TimeSlot
 
+from ..shared.event import EventPublisher
 from .demands import Demands
 from .demands_per_stage import DemandsPerStage
 from .parallelization.stage import Stage
@@ -23,10 +25,12 @@ class PlanningFacade:
         project_repository: ProjectRepository,
         stage_parallelization: StageParallelization,
         plan_chosen_resources_service: PlanChosenResources,
+        event_publisher: EventPublisher,
     ) -> None:
         self._project_repository = project_repository
         self._stage_parallelization = stage_parallelization
         self._plan_chosen_resources_service = plan_chosen_resources_service
+        self._event_publisher = event_publisher
 
     def add_new_project(self, name: str, *stages: Stage) -> ProjectId:
         parallelized_stages = self._stage_parallelization.from_stages(*set(stages))
@@ -37,10 +41,14 @@ class PlanningFacade:
     def add_demands(self, project_id: ProjectId, demands: Demands) -> None:
         project = self._project_repository.get(project_id)
         project.add_demands(demands)
+        event = CapabilitiesDemandedEvent(project_id, project.all_demands)
+        self._event_publisher.publish(event)
 
     def define_demands_per_stage(self, project_id: ProjectId, demands_per_stage: DemandsPerStage) -> None:
         project = self._project_repository.get(project_id)
         project.add_demands_per_stage(demands_per_stage)
+        event = CapabilitiesDemandedEvent(project_id, project.all_demands)
+        self._event_publisher.publish(event)
 
     def define_resources_within_dates(
         self,
@@ -86,16 +94,24 @@ class PlanningFacade:
     def plan_critical_stage(self, project_id: ProjectId, critical_stage: Stage, stage_time_slot: TimeSlot) -> None:
         project = self._project_repository.get(id=project_id)
         project.add_schedule_by_critical_stage(critical_stage, stage_time_slot)
+        event = CriticalStagePlannedEvent(
+            project_id=project_id, stage_time_slot=stage_time_slot, critical_resource_id=None
+        )
+        self._event_publisher.publish(event)  # TODO: untested event  # noqa: FIX002, TD002
 
     def plan_critical_stage_with_resource(
         self,
         project_id: ProjectId,
         critical_stage: Stage,
-        resource_id: ResourceId,  # pyright: ignore [reportUnusedParameter]  # noqa: ARG002
+        resource_id: ResourceId,
         stage_time_slot: TimeSlot,
     ) -> None:
         project = self._project_repository.get(id=project_id)
         project.add_schedule_by_critical_stage(critical_stage, stage_time_slot)
+        event = CriticalStagePlannedEvent(
+            project_id=project_id, stage_time_slot=stage_time_slot, critical_resource_id=resource_id
+        )
+        self._event_publisher.publish(event)  # TODO: untested event  # noqa: FIX002, TD002
 
     def adjust_stages_to_resource_availability(
         self, project_id: ProjectId, time_boundaries: TimeSlot, *stages: Stage

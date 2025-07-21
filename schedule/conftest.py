@@ -5,8 +5,9 @@ import pytest
 from lagom import Container
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session, sessionmaker
-from testcontainers.postgres import PostgresContainer
+from testcontainers.postgres import PostgresContainer  # pyright: ignore[reportMissingTypeStubs]
 
+from schedule import container as container_module
 from schedule.allocation import AllocationFacade
 from schedule.allocation.capability_scheduling import CapabilityFinder, CapabilityScheduler
 from schedule.availability import AvailabilityFacade
@@ -53,7 +54,7 @@ def session(session_factory: Callable[[], Session]) -> Iterator[Session]:
 
 @pytest.fixture
 def container(session: Session) -> Container:
-    container = Container()
+    container = container_module.build()
     container[Session] = session
     return container
 

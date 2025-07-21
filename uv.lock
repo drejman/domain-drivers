@@ -111,8 +111,10 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "basedpyright" },
+    { name = "mockito" },
     { name = "mypy" },
     { name = "pytest" },
+    { name = "pytest-mockito" },
     { name = "ruff" },
     { name = "tach" },
 ]
@@ -135,8 +137,10 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "basedpyright", specifier = ">=1.28.4" },
+    { name = "mockito", specifier = ">=1.5.4" },
     { name = "mypy", specifier = ">=1.15.0" },
     { name = "pytest", specifier = ">=8.3.4" },
+    { name = "pytest-mockito", specifier = ">=0.0.4" },
     { name = "ruff", specifier = ">=0.9.9" },
     { name = "tach", specifier = ">=0.28.5" },
 ]
@@ -274,6 +278,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba", size = 8729 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979 },
+]
+
+[[package]]
+name = "mockito"
+version = "1.5.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/f5/52acd91a437530992c24ec00c223a1dba1ac51041fea430d28e16a0adb16/mockito-1.5.4.tar.gz", hash = "sha256:f00ed587c32966df3293c294cadb31769460adfc4154f52b90672946aa4b32df", size = 59915 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/58/1c/3eb92175fc541abeefcf135f14df4c4a9568e9f44b7d68b376867a39089a/mockito-1.5.4-py3-none-any.whl", hash = "sha256:ba7fbea6ede6ebc180f376bc5d97a4b95c7ccf54a57f12d2af740c440d35d553", size = 30293 },
 ]
 
 [[package]]
@@ -433,6 +446,16 @@ sdist = { url = "https://files.pythonhosted.org/packages/08/ba/45911d754e8eba3d5
 wheels = [
     { url = "https://files.pythonhosted.org/packages/29/16/c8a903f4c4dffe7a12843191437d7cd8e32751d5de349d45d3fe69544e87/pytest-8.4.1-py3-none-any.whl", hash = "sha256:539c70ba6fcead8e78eebbf1115e8b589e7565830d7d006a8723f19ac8a0afb7", size = 365474 },
 ]
+
+[[package]]
+name = "pytest-mockito"
+version = "0.0.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mockito" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/a4/f8/ae0035931c603e4ed5db496c13b12a995f327ee1d86d1b705eb3b6b9365b/pytest-mockito-0.0.4.tar.gz", hash = "sha256:40d40cdf118127dcb1e3c9e838b0d1c11d5197a23beaf10b6e3f42f9b6cb68a9", size = 3037 }
 
 [[package]]
 name = "python-dateutil"

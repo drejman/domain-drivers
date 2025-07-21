@@ -57,6 +57,7 @@ ignore = [
     "ARG002",
     "FBT001",  # Boolean-typed positional argument in function definition
     "S311",  # standard pseudo-random generators
+    "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed
 ]
 "schedule/availability/tests/test_resource_availability_sql_repository.py" = [
     "SLF001",  # private member accessed
@@ -66,8 +67,10 @@ ignore = [
 [dependency-groups]
 dev = [
     "basedpyright>=1.28.4",
+    "mockito>=1.5.4",
     "mypy>=1.15.0",
     "pytest>=8.3.4",
+    "pytest-mockito>=0.0.4",
     "ruff>=0.9.9",
     "tach>=0.28.5",
 ]

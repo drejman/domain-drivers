@@ -1,5 +1,7 @@
 from collections.abc import Iterable
 
+from schedule.availability.resource_taken_over_event import ResourceTakenOverEvent
+from schedule.shared.event.event_publisher import EventPublisher
 from schedule.shared.timeslot.time_slot import TimeSlot
 
 from .calendar import Calendar
@@ -18,10 +20,12 @@ class AvailabilityFacade:
         self,
         repository: ResourceAvailabilityRepository,
         read_model: ResourceAvailabilityReadModel,
+        event_publisher: EventPublisher,
         duration_unit: DurationUnit | None = None,
     ) -> None:
         self._repository: ResourceAvailabilityRepository = repository
         self._read_model: ResourceAvailabilityReadModel = read_model
+        self._event_publisher: EventPublisher = event_publisher
         if duration_unit is None:
             duration_unit = DurationUnit.default()
         self._duration_unit: DurationUnit = duration_unit
@@ -72,10 +76,13 @@ class AvailabilityFacade:
 
     def disable(self, resource_id: ResourceId, time_slot: TimeSlot, requester: Owner) -> bool:
         """Turn off the possibility of reserving the resource, used by superusers or admins."""
-        grouped = self.find(resource_id=resource_id, time_slot=time_slot)
-        result = grouped.disable(requester=requester)
-        if result is True:
-            self._repository.add(grouped)
+        to_disable = self.find(resource_id=resource_id, time_slot=time_slot)
+        previous_owners = to_disable.owners
+        if result := to_disable.disable(requester=requester):
+            self._repository.add(to_disable)
+            self._event_publisher.publish(
+                ResourceTakenOverEvent(resource_id=resource_id, slot=time_slot, previous_owners=previous_owners)
+            )
         return result
 
     def find(self, resource_id: ResourceId, time_slot: TimeSlot) -> GroupedResourceAvailability:

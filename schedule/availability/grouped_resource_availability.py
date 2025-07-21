@@ -39,6 +39,10 @@ class GroupedResourceAvailability:
     )
 
     @property
+    def owners(self) -> frozenset[Owner]:
+        return frozenset(ra.blocked_by for ra in self._resource_availabilities)
+
+    @property
     def resource_availabilities(self) -> list[ResourceAvailability]:
         return self._resource_availabilities
 

@@ -1,18 +1,23 @@
 from datetime import date, datetime, timedelta
+from typing import Any
 
 import pytest
 from lagom import Container
+from mockito import verify  # pyright: ignore [reportUnknownVariableType, reportMissingTypeStubs]
+from mockito.matchers import arg_that  # pyright: ignore [reportUnknownVariableType, reportMissingTypeStubs]
 
 from schedule.planning.chosen_resources import ChosenResources
 from schedule.planning.demand import Demand
 from schedule.planning.demands import Demands
 from schedule.planning.demands_per_stage import DemandsPerStage
+from schedule.planning.events import CapabilitiesDemandedEvent
 from schedule.planning.parallelization.stage import Stage
 from schedule.planning.schedule.schedule import Schedule
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
 
 from ...availability import ResourceId
+from ...shared.event import EventBus
 from ..planning_facade import PlanningFacade
 
 
@@ -135,3 +140,36 @@ class TestPlanningFacade:
 
         loaded = planning_facade.load(project_id)
         assert loaded.schedule.dates == dates
+
+    def test_capabilities_demanded_event_is_emitted_after_adding_demands(
+        self, planning_facade: PlanningFacade, when: Any
+    ) -> None:
+        when(EventBus).publish(...)
+        project_id = planning_facade.add_new_project("project", Stage("Stage 1"))
+        demands_for_java = Demands.of(Demand.for_(Capability.skill("JAVA")))
+
+        planning_facade.add_demands(project_id, demands_for_java)
+
+        verify(EventBus).publish(
+            arg_that(lambda event: self._is_capabilities_demanded(event, project_id, demands_for_java))
+        )
+
+    def test_capabilities_demanded_event_is_emitted_after_defining_demands_per_stage(
+        self, planning_facade: PlanningFacade, when: Any
+    ) -> None:
+        when(EventBus).publish(...)
+        stage = Stage("Stage 1")
+        project_id = planning_facade.add_new_project("project", stage)
+
+        demands_for_java = Demands.of(Demand.for_(Capability.skill("JAVA")))
+        demands_per_stage = DemandsPerStage({stage.name: demands_for_java})
+        planning_facade.define_demands_per_stage(project_id, demands_per_stage)
+
+        verify(EventBus).publish(
+            arg_that(lambda event: self._is_capabilities_demanded(event, project_id, demands_for_java))
+        )
+
+    def _is_capabilities_demanded(self, event: Any, project_id: Any, demands: Any) -> bool:
+        return (
+            isinstance(event, CapabilitiesDemandedEvent) and event.project_id == project_id and event.demands == demands
+        )

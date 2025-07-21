@@ -1,15 +1,20 @@
+from datetime import UTC, datetime
+
 from schedule.allocation.project_allocations_id import ProjectAllocationsId
+from schedule.shared.event import EventPublisher
 
 from .cashflow import Cashflow
 from .cost import Cost
 from .earnings import Earnings
+from .earnings_recalculated_event import EarningsRecalculatedEvent
 from .income import Income
 from .repository.cashflow_repository import CashflowRepository
 
 
 class CashflowFacade:
-    def __init__(self, cash_flow_repository: CashflowRepository) -> None:
+    def __init__(self, cash_flow_repository: CashflowRepository, event_publisher: EventPublisher) -> None:
         self._cash_flow_repository: CashflowRepository = cash_flow_repository
+        self._event_publisher: EventPublisher = event_publisher
 
     def add_income_and_cost(self, project_id: ProjectAllocationsId, income: Income, cost: Cost) -> None:
         try:
@@ -19,6 +24,11 @@ class CashflowFacade:
         except self._cash_flow_repository.NotFoundError:
             cashflow = Cashflow(project_id=project_id, income=income, cost=cost)
             self._cash_flow_repository.add(cashflow)
+
+        event = EarningsRecalculatedEvent(
+            project_id=project_id, earnings=cashflow.earnings, occurred_at=datetime.now(tz=UTC)
+        )
+        self._event_publisher.publish(event)
 
     def find(self, project_id: ProjectAllocationsId) -> Earnings:
         cashflow = self._cash_flow_repository.get(project_id)

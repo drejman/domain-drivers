@@ -1,7 +1,6 @@
 from datetime import UTC, datetime
 from uuid import UUID
 
-from schedule.allocation.capability_scheduling import AllocatableCapabilitiesSummary
 from schedule.allocation.events import CapabilitiesAllocatedEvent
 from schedule.availability import AvailabilityFacade, Owner, ResourceId
 from schedule.shared.capability.capability import Capability
@@ -9,7 +8,13 @@ from schedule.shared.event import EventPublisher
 from schedule.shared.timeslot.time_slot import TimeSlot
 
 from .allocations import Allocations
-from .capability_scheduling import AllocatableCapabilityId, CapabilityFinder
+from .capability_scheduling import (
+    AllocatableCapabilitiesSummary,
+    AllocatableCapabilityId,
+    AllocatableCapabilitySummary,
+    CapabilityFinder,
+    CapabilitySelector,
+)
 from .demands import Demands
 from .events import ProjectAllocationScheduledEvent
 from .project_allocations import ProjectAllocations
@@ -54,27 +59,25 @@ class AllocationFacade:
         self,
         project_id: ProjectAllocationsId,
         allocatable_capability_id: AllocatableCapabilityId,
-        capability: Capability,
         time_slot: TimeSlot,
     ) -> UUID | None:
         # TODO: add transaction  # noqa: FIX002, TD002
-        owner = Owner(project_id.id)
-        if not self._capability_finder.is_present(allocatable_capability_id):
+        capabilities = self._capability_finder.find_by_id(allocatable_capability_id)
+        capability = next(iter(capabilities.all), None)
+        if capability is None:
             return None
-        if (
-            self._availability_facade.block(
-                resource_id=allocatable_capability_id.to_availability_resource_id(),
-                time_slot=time_slot,
-                requester=owner,
-            )
-            is False
+
+        if not self._availability_facade.block(
+            resource_id=allocatable_capability_id.to_availability_resource_id(),
+            time_slot=time_slot,
+            requester=Owner(project_id.id),
         ):
             return None
 
         event = self._allocate(
             project_id=project_id,
             allocatable_capability_id=allocatable_capability_id,
-            capability=capability,
+            capability=capability.capabilities,
             time_slot=time_slot,
         )
         return event.allocated_capability_id if event is not None else None
@@ -105,7 +108,10 @@ class AllocationFacade:
             return False
 
         allocated_event = self._allocate(
-            project_id=project_id, allocatable_capability_id=to_allocate, capability=capability, time_slot=time_slot
+            project_id=project_id,
+            allocatable_capability_id=to_allocate.id,
+            capability=to_allocate.capabilities,
+            time_slot=time_slot,
         )
         return allocated_event is not None
 
@@ -113,7 +119,7 @@ class AllocationFacade:
         self,
         project_id: ProjectAllocationsId,
         allocatable_capability_id: AllocatableCapabilityId,
-        capability: Capability,
+        capability: CapabilitySelector,
         time_slot: TimeSlot,
     ) -> CapabilitiesAllocatedEvent | None:
         allocations = self._project_allocations_repository.get(project_id)
@@ -126,8 +132,8 @@ class AllocationFacade:
 
     def _find_chosen_allocatable_capability(
         self, proposed_capabilities: AllocatableCapabilitiesSummary, chosen: ResourceId
-    ) -> AllocatableCapabilityId | None:
-        matching = [ac.id for ac in proposed_capabilities.all if ac.id.to_availability_resource_id() == chosen]
+    ) -> AllocatableCapabilitySummary | None:
+        matching = [ac for ac in proposed_capabilities.all if ac.id.to_availability_resource_id() == chosen]
         return next(iter(matching), None)
 
     def release_from_project(

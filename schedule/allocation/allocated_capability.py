@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import attrs as a
 
-from schedule.allocation.capability_scheduling import AllocatableCapabilityId
-from schedule.shared.capability import Capability
+from schedule.allocation.capability_scheduling import AllocatableCapabilityId, CapabilitySelector
 from schedule.shared.timeslot import TimeSlot
 
 
 @a.define(frozen=True)
 class AllocatedCapability:
     allocated_capability_id: AllocatableCapabilityId
-    capability: Capability
+    capability: CapabilitySelector
     time_slot: TimeSlot

@@ -4,12 +4,11 @@ from datetime import datetime
 
 import attrs as a
 
-from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
 
 from .allocated_capability import AllocatedCapability
 from .allocations import Allocations
-from .capability_scheduling import AllocatableCapabilityId
+from .capability_scheduling import AllocatableCapabilityId, CapabilitySelector
 from .demands import Demands
 from .events import (
     CapabilitiesAllocatedEvent,
@@ -55,7 +54,7 @@ class ProjectAllocations:
     def allocate(
         self,
         allocatable_capability_id: AllocatableCapabilityId,
-        capability: Capability,
+        capability: CapabilitySelector,
         requested_slot: TimeSlot,
         when: datetime,
     ) -> CapabilitiesAllocatedEvent | None:

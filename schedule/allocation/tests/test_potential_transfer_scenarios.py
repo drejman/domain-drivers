@@ -11,6 +11,7 @@ from schedule.simulation.simulation_facade import SimulationFacade
 
 from ..allocated_capability import AllocatedCapability
 from ..allocation_facade import AllocationFacade
+from ..capability_scheduling import CapabilitySelector
 from ..cashflow.earnings import Earnings
 from ..demand import Demand
 from ..demands import Demands
@@ -61,7 +62,9 @@ def insurance_soft_id() -> ProjectAllocationsId:
 
 @pytest.fixture
 def staszek_java_mid(jan_1: TimeSlot) -> AllocatedCapability:
-    return AllocatedCapability(AllocatableCapabilityId.new_one(), Capability.skill("JAVA-MID"), jan_1)
+    return AllocatedCapability(
+        AllocatableCapabilityId.new_one(), CapabilitySelector.can_just_perform(Capability.skill("JAVA-MID")), jan_1
+    )
 
 
 @pytest.fixture
@@ -97,7 +100,6 @@ class TestPotentialTransferScenarios:
             allocatable_capability_id=allocatable_resource_factory(
                 staszek_java_mid.time_slot, staszek_java_mid.capability, staszek_resource
             ),
-            capability=staszek_java_mid.capability,
             time_slot=staszek_java_mid.time_slot,
         )
         summary = allocation_facade.find_projects_allocations_by_ids(banking_soft_id)
@@ -139,7 +141,6 @@ class TestPotentialTransferScenarios:
             allocatable_capability_id=allocatable_resource_factory(
                 staszek_java_mid.time_slot, staszek_java_mid.capability, staszek_resource
             ),
-            capability=staszek_java_mid.capability,
             time_slot=staszek_java_mid.time_slot,
         )
         summary = allocation_facade.find_projects_allocations_by_ids(banking_soft_id)
@@ -181,7 +182,6 @@ class TestPotentialTransferScenarios:
             allocatable_capability_id=allocatable_resource_factory(
                 staszek_java_mid.time_slot, staszek_java_mid.capability, staszek_resource
             ),
-            capability=staszek_java_mid.capability,
             time_slot=staszek_java_mid.time_slot,
         )
         summary = allocation_facade.find_projects_allocations_by_ids(banking_soft_id)

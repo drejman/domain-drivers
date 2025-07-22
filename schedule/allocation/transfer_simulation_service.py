@@ -7,7 +7,7 @@ from .allocated_capability import AllocatedCapability
 from .allocation_facade import AllocationFacade
 from .cashflow.earnings import Earnings
 from .project_allocations_id import ProjectAllocationsId
-from .simulated_transfer import SimulatedProjectAllocations
+from .simulated_project_allocations import SimulatedProjectAllocations
 
 
 class TransferSimulationService:

@@ -86,8 +86,8 @@ class TestCapabilityAllocating:
         allocatable_capability_2 = self._schedule_capabilities(self.ALLOCATABLE_RESOURCE_ID_2, capability, one_day)
         project_1 = self._allocation_facade.create_allocation(one_day, Demands.of(Demand(debugging, one_day)))
         project_2 = self._allocation_facade.create_allocation(one_day, Demands.of(Demand(debugging, one_day)))
-        _ = self._allocation_facade.allocate_to_project(project_1, allocatable_capability_1, debugging, one_day)
-        _ = self._allocation_facade.allocate_to_project(project_2, allocatable_capability_2, debugging, one_day)
+        _ = self._allocation_facade.allocate_to_project(project_1, allocatable_capability_1, one_day)
+        _ = self._allocation_facade.allocate_to_project(project_2, allocatable_capability_2, one_day)
         project_id = ProjectAllocationsId.new_one()
         self._allocation_facade.schedule_project_allocations_demands(project_id, Demands.none())
 

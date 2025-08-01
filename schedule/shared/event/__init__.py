@@ -1,5 +1,5 @@
 from .event import Event
-from .event_bus import EventBus
+from .event_bus import EventBus, SyncExecutor
 from .event_publisher import EventPublisher
 
-__all__ = ["Event", "EventBus", "EventPublisher"]
+__all__ = ["Event", "EventBus", "EventPublisher", "SyncExecutor"]

@@ -94,6 +94,6 @@ class AvailabilityFacade:
         normalized = NormalizedSlot.from_time_slot(within, self._duration_unit)
         return self._read_model.load(resource_id, normalized)
 
-    def load_calendars(self, resource_ids: set[ResourceId], within: TimeSlot) -> Calendars:
+    def load_calendars(self, resource_ids: Iterable[ResourceId], within: TimeSlot) -> Calendars:
         normalized = NormalizedSlot.from_time_slot(within, self._duration_unit)
         return self._read_model.load_all(resource_ids, normalized)

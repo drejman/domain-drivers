@@ -10,7 +10,9 @@ from testcontainers.postgres import PostgresContainer  # pyright: ignore[reportM
 from schedule import container as container_module
 from schedule.allocation import AllocationFacade
 from schedule.allocation.capability_scheduling import CapabilityFinder, CapabilityScheduler
+from schedule.allocation.cashflow.cashflow_facade import CashflowFacade
 from schedule.availability import AvailabilityFacade
+from schedule.planning.planning_facade import PlanningFacade
 from schedule.resource import ResourceFacade
 from schedule.resource_scheduling import ResourceSchedulingFacade
 from schedule.shared.sqla_repository import mapper_registry
@@ -87,3 +89,13 @@ def resource_scheduling_facade(container: Container) -> ResourceSchedulingFacade
 @pytest.fixture
 def capability_finder(container: Container) -> CapabilityFinder:
     return container.resolve(CapabilityFinder)
+
+
+@pytest.fixture
+def cashflow_facade(container: Container) -> CashflowFacade:
+    return container.resolve(CashflowFacade)
+
+
+@pytest.fixture
+def planning_facade(container: Container) -> PlanningFacade:
+    return container.resolve(PlanningFacade)

@@ -1,6 +1,7 @@
 from datetime import UTC, datetime
 
-from schedule.allocation.project_allocations_id import ProjectAllocationsId
+from schedule.allocation import ProjectAllocationsId
+from schedule.allocation.cashflow.cashflow_sqla_repository import CashflowRepository
 from schedule.shared.event import EventPublisher
 
 from .cashflow import Cashflow
@@ -8,7 +9,6 @@ from .cost import Cost
 from .earnings import Earnings
 from .earnings_recalculated_event import EarningsRecalculatedEvent
 from .income import Income
-from .repository.cashflow_repository import CashflowRepository
 
 
 class CashflowFacade:
@@ -33,3 +33,7 @@ class CashflowFacade:
     def find(self, project_id: ProjectAllocationsId) -> Earnings:
         cashflow = self._cash_flow_repository.get(project_id)
         return cashflow.earnings
+
+    def find_all(self) -> dict[ProjectAllocationsId, Earnings]:
+        cashflows = self._cash_flow_repository.get_all()
+        return {cashflow.project_id: cashflow.earnings for cashflow in cashflows}

@@ -5,14 +5,12 @@ from typing import TYPE_CHECKING
 
 import attrs as a
 
+from schedule.allocation import AllocatedCapability, ProjectAllocationsId, ProjectsAllocationsSummary
+from schedule.allocation.capability_scheduling import AllocatableCapabilityId, AllocatableCapabilitySummary
+from schedule.allocation.cashflow import Earnings
 from schedule.simulation import Demand as SimulationDemand
 from schedule.simulation import Demands as SimulationDemands
 from schedule.simulation import ProjectId, SimulatedProject
-
-from .allocated_capability import AllocatedCapability
-from .cashflow.earnings import Earnings
-from .project_allocations_id import ProjectAllocationsId
-from .projects_allocations_summary import ProjectsAllocationsSummary
 
 if TYPE_CHECKING:
     from decimal import Decimal
@@ -49,6 +47,37 @@ class SimulatedProjectAllocations:
         self._summary.project_allocations[project_to] = new_allocations_project_to
 
         return SimulatedProjectAllocations(self._summary, self._earnings)
+
+    def transfer_capabilities(
+        self,
+        project_to: ProjectAllocationsId,
+        capability_to_transfer: AllocatableCapabilitySummary,
+        for_slot: TimeSlot,
+    ) -> SimulatedProjectAllocations:
+        project_to_move_from = self._find_project_to_move_from(capability_to_transfer.id, for_slot)
+        if project_to_move_from is None:
+            return self
+
+        allocated_capability = AllocatedCapability(
+            capability_to_transfer.id,
+            capability_to_transfer.capabilities,
+            capability_to_transfer.time_slot,
+        )
+        return self.transfer(project_to_move_from, project_to, allocated_capability, for_slot)
+
+    def _find_project_to_move_from(
+        self,
+        capability_id: AllocatableCapabilityId,
+        for_slot: TimeSlot,  # pyright: ignore [reportUnusedParameter]  # noqa: ARG002
+        # TODO: check why it's not used  # noqa: FIX002, TD002
+    ) -> ProjectAllocationsId | None:
+        for (
+            project_allocations_id,
+            allocations,
+        ) in self._summary.project_allocations.items():
+            if allocations.find(capability_id) is not None:
+                return project_allocations_id
+        return None
 
     def to_simulated_projects(self) -> list[SimulatedProject]:
         def value_getter(earnings: Earnings) -> Decimal:

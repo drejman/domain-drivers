@@ -1,13 +1,14 @@
 from sqlalchemy import Column, Integer, Table
 from sqlalchemy.orm import synonym
 
-from schedule.allocation.cashflow.cashflow import Cashflow
-from schedule.allocation.cashflow.cost import Cost
-from schedule.allocation.cashflow.income import Income
-from schedule.allocation.project_allocations_id import ProjectAllocationsId
+from schedule.allocation import ProjectAllocationsId
 from schedule.shared.sqla_repository import AsJSON, EmbeddedUUID
 from schedule.shared.sqla_repository.mappers import mapper_registry
 from schedule.shared.sqla_repository.sqla_repository import SQLAlchemyRepository
+
+from .cashflow import Cashflow
+from .cost import Cost
+from .income import Income
 
 cashflows = Table(
     "cashflows",

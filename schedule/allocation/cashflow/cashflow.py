@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import attrs as a
 
-from schedule.allocation.project_allocations_id import ProjectAllocationsId
+from schedule.allocation import ProjectAllocationsId
 
 from .cost import Cost
 from .earnings import Earnings

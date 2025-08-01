@@ -1,7 +1,5 @@
 from typing import Any
 
-import pytest
-from lagom import Container
 from mockito import verify  # pyright: ignore [reportUnknownVariableType, reportMissingTypeStubs]
 from mockito.matchers import arg_that  # pyright: ignore [reportUnknownVariableType, reportMissingTypeStubs]
 
@@ -13,11 +11,6 @@ from ..cost import Cost
 from ..earnings import Earnings
 from ..earnings_recalculated_event import EarningsRecalculatedEvent
 from ..income import Income
-
-
-@pytest.fixture
-def cashflow_facade(container: Container) -> CashflowFacade:
-    return container.resolve(CashflowFacade)
 
 
 class TestCashflowFacade:

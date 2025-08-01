@@ -1,8 +1,6 @@
 from datetime import date, datetime, timedelta
 from typing import Any
 
-import pytest
-from lagom import Container
 from mockito import verify  # pyright: ignore [reportUnknownVariableType, reportMissingTypeStubs]
 from mockito.matchers import arg_that  # pyright: ignore [reportUnknownVariableType, reportMissingTypeStubs]
 
@@ -19,11 +17,6 @@ from schedule.shared.timeslot.time_slot import TimeSlot
 from ...availability import ResourceId
 from ...shared.event import EventBus
 from ..planning_facade import PlanningFacade
-
-
-@pytest.fixture
-def planning_facade(container: Container) -> PlanningFacade:
-    return container.resolve(PlanningFacade)
 
 
 class TestPlanningFacade:

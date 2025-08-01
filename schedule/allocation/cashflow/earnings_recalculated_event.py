@@ -5,7 +5,7 @@ from uuid import UUID, uuid4
 
 import attrs as a
 
-from schedule.allocation.project_allocations_id import ProjectAllocationsId
+from schedule.allocation import ProjectAllocationsId
 from schedule.shared.utcnow import utcnow
 
 from .earnings import Earnings

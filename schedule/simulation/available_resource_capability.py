@@ -14,4 +14,4 @@ class AvailableResourceCapability:
     time_slot: TimeSlot
 
     def performs(self, capability: Capability) -> bool:
-        return self._capability.perform(capability)
+        return self._capability.can_perform(capability)

@@ -10,7 +10,7 @@ from concurrent.futures._base import Future
 from dataclasses import dataclass
 from typing import Any, ClassVar, Final, ParamSpec, TypeVar, override
 
-from lagom import Container
+from lagom.interfaces import ReadableContainer
 
 from .event import Event
 from .event_publisher import EventPublisher
@@ -48,8 +48,8 @@ F = TypeVar("F", bound=Callable[..., Any])
 class EventBus(EventPublisher):
     __handlers: ClassVar[dict[type[Event], list[ClassBasedHandler]]] = defaultdict(list)
 
-    def __init__(self, container: Container, executor: Executor) -> None:
-        self._container: Container = container
+    def __init__(self, container: ReadableContainer, executor: Executor) -> None:
+        self._container: ReadableContainer = container
         self._executor: Executor = executor
 
     @override

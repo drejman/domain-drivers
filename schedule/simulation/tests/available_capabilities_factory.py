@@ -17,8 +17,8 @@ class FakeCapabilityPerformer(CapabilityPerformer):
     def __init__(self, capability: Capability) -> None:
         self._capability = capability
 
-    def perform(self, capability: Capability) -> bool:
-        return self._capability == capability
+    def can_perform(self, capabilities: Capability) -> bool:
+        return self._capability == capabilities
 
 
 class AvailableResourceCapabilityFactory(factory.Factory):  # type: ignore

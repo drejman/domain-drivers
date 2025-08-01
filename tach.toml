@@ -10,84 +10,140 @@ source_roots = [
 ]
 forbid_circular_dependencies = true
 
+# ALLOCATION CONTEXT
 
 [[modules ]]
 path = "schedule.allocation"
-depends_on = ["schedule.simulation", "schedule.availability", "schedule.allocation.capability_scheduling"]
+depends_on = ["schedule.availability", "schedule.allocation.capability_scheduling"]
 
 [[interfaces]]
-expose = ["AllocationFacade"]
 from = ["schedule.allocation"]
+expose = [
+    "AllocatedCapability",
+    "AllocationFacade",
+    "CapabilitiesAllocatedEvent",
+    "CapabilityReleasedEvent",
+    "Demand",
+    "Demands",
+    "ProjectAllocationScheduledEvent",
+    "ProjectAllocationsDemandsScheduledEvent",
+    "ProjectAllocationsId",
+    "ProjectsAllocationsSummary",
+]
+
+[[interfaces]]
+visibility = ["schedule.allocation.cashflow"]
+from = ["schedule.allocation"]
+expose = ["ProjectAllocationsId"]
+
+[[interfaces]]
+visibility = ["schedule.allocation.transfers"]
+from = ["schedule.allocation"]
+expose = ["AllocatedCapability", "ProjectsAllocationsSummary"]
 
 [[modules ]]
 path = "schedule.allocation.capability_scheduling"
 depends_on = ["schedule.availability"]
 
 [[interfaces]]
-expose = ["AllocatableCapabilitiesSummary", "AllocatableCapabilityId", "AllocatableCapabilitySummary", "AllocatableResourceId", "CapabilityFinder", "CapabilityScheduler", "CapabilitySelector"]
 from = ["schedule.allocation.capability_scheduling"]
+expose = [
+    "AllocatableCapabilitiesSummary",
+    "AllocatableCapabilityId",
+    "AllocatableCapabilitySummary",
+    "AllocatableResourceId",
+    "CapabilityFinder",
+    "CapabilityScheduler",
+    "CapabilitySelector",
+]
 
 [[modules ]]
 path = "schedule.allocation.capability_scheduling.legacy_acl"
 depends_on = ["schedule.allocation.capability_scheduling"]
 
 [[interfaces]]
-expose = []
 from = ["schedule.allocation.capability_scheduling.legacy_acl"]
+expose = []
+
+[[modules ]]
+path = "schedule.allocation.cashflow"
+depends_on = ["schedule.allocation"]
+
+[[interfaces]]
+from = ["schedule.allocation.cashflow"]
+expose = ["CashflowFacade", "Earnings", "EarningsRecalculatedEvent"]
+
+[[modules ]]
+path = "schedule.allocation.transfers"
+depends_on = ["schedule.allocation", "schedule.simulation", "schedule.allocation.cashflow", "schedule.allocation.capability_scheduling"]
+
+[[interfaces]]
+from = ["schedule.allocation.transfers"]
+expose = ["SimulatedProjectAllocations", "TransferSimulationService"]
+
+# AVAILABILITY CONTEXT
 
 [[modules ]]
 path = "schedule.availability"
 depends_on = []
 
 [[interfaces]]
-expose = ["AvailabilityFacade", "Calendars", "Owner", "ResourceId"]
 from = ["schedule.availability"]
+expose = ["AvailabilityFacade", "Calendar", "Calendars", "Owner", "ResourceId", "ResourceTakenOverEvent"]
 
 [[modules ]]
 path = "schedule.optimization"
 depends_on = []
 
 [[interfaces]]
-expose = ["Item", "OptimizationFacade", "TotalCapacity", "TotalWeight"]
 from = ["schedule.optimization"]
+expose = ["Item", "OptimizationFacade", "TotalCapacity", "TotalWeight"]
+
+# PLANNING CONTEXT
 
 [[modules ]]
 path = "schedule.planning"
 depends_on = ["schedule.sorter", "schedule.availability"]
 
 [[interfaces]]
-expose = []
 from = ["schedule.planning"]
+expose = [
+    "CapabilitiesDemandedEvent",
+    "CriticalStagePlannedEvent",
+    "Demands",
+    "NeededResourcesChosenEvent",
+    "PlanningFacade",
+    "ProjectCard",
+    "ProjectId",
+]
+
+# RESOURCE CONTEXT
 
 [[modules ]]
 path = "schedule.resource"
 depends_on = []
 
 [[interfaces]]
-expose = ["DeviceId", "DeviceSummary", "EmployeeId", "EmployeeSummary", "ResourceFacade", "Seniority"]
 from = ["schedule.resource"]
+expose = ["DeviceId", "DeviceSummary", "EmployeeId", "EmployeeSummary", "ResourceFacade", "Seniority"]
 
 [[modules ]]
 path = "schedule.resource_scheduling"
 depends_on = ["schedule.allocation.capability_scheduling", "schedule.resource"]
 
 [[interfaces]]
-expose = ["ResourceSchedulingFacade"]
 from = ["schedule.resource_scheduling"]
+expose = ["ResourceSchedulingFacade"]
 
-
-[[modules ]]
-path = "schedule.shared"
-depends_on = []
-utility = true
+# SIMULATIONS CONTEXT
 
 [[modules ]]
 path = "schedule.simulation"
 depends_on = ["schedule.optimization"]
 
 [[interfaces]]
-expose = ["Demand", "Demands", "ProjectId", "SimulatedCapabilities", "SimulationFacade", "SimulatedProject"]
 from = ["schedule.simulation"]
+expose = ["AvailableResourceCapability", "Demand", "Demands", "ProjectId", "SimulatedCapabilities", "SimulationFacade", "SimulatedProject"]
 
 [[modules ]]
 path = "schedule.sorter"
@@ -96,3 +152,16 @@ depends_on = []
 [[interfaces]]
 expose = ["Graph", "Node"]
 from = ["schedule.sorter"]
+
+# RISK CONTEXT
+
+[[modules ]]
+path = "schedule.risk"
+depends_on = ["schedule.simulation", "schedule.allocation", "schedule.allocation.cashflow", "schedule.allocation.capability_scheduling", "schedule.resource", "schedule.availability", "schedule.planning", "schedule.allocation.transfers"]
+
+# SHARED
+
+[[modules ]]
+path = "schedule.shared"
+depends_on = []
+utility = true

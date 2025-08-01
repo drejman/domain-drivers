@@ -1,23 +1,20 @@
 from datetime import timedelta
 
 import pytest
+from lagom import Container
 
+from schedule.allocation.allocated_capability import AllocatedCapability
+from schedule.allocation.allocation_facade import AllocationFacade
+from schedule.allocation.capability_scheduling import AllocatableCapabilityId, CapabilitySelector
 from schedule.allocation.capability_scheduling.allocatable_resource_id import AllocatableResourceId
-from schedule.allocation.tests.test_allocations_to_project import AllocatableCapabilityId
-from schedule.optimization.optimization_facade import OptimizationFacade
+from schedule.allocation.cashflow.earnings import Earnings
+from schedule.allocation.demand import Demand
+from schedule.allocation.demands import Demands
+from schedule.allocation.project_allocations_id import ProjectAllocationsId
+from schedule.allocation.tests.conftest import AllocatableResourceFactory, allocatable_resource_factory  # noqa: F401
+from schedule.allocation.transfers.transfer_simulation_service import TransferSimulationService
 from schedule.shared.capability.capability import Capability
 from schedule.shared.timeslot.time_slot import TimeSlot
-from schedule.simulation.simulation_facade import SimulationFacade
-
-from ..allocated_capability import AllocatedCapability
-from ..allocation_facade import AllocationFacade
-from ..capability_scheduling import CapabilitySelector
-from ..cashflow.earnings import Earnings
-from ..demand import Demand
-from ..demands import Demands
-from ..project_allocations_id import ProjectAllocationsId
-from ..transfer_simulation_service import TransferSimulationService
-from .conftest import AllocatableResourceFactory
 
 
 @pytest.fixture
@@ -73,8 +70,8 @@ def staszek_resource() -> AllocatableResourceId:
 
 
 @pytest.fixture
-def transfer_simulation_service(allocation_facade: AllocationFacade) -> TransferSimulationService:
-    return TransferSimulationService(SimulationFacade(OptimizationFacade()), allocation_facade=allocation_facade)
+def transfer_simulation_service(container: Container) -> TransferSimulationService:
+    return container.resolve(TransferSimulationService)
 
 
 class TestPotentialTransferScenarios:
@@ -87,7 +84,7 @@ class TestPotentialTransferScenarios:
         staszek_resource: AllocatableResourceId,
         transfer_simulation_service: TransferSimulationService,
         allocation_facade: AllocationFacade,
-        allocatable_resource_factory: AllocatableResourceFactory,
+        allocatable_resource_factory: AllocatableResourceFactory,  # noqa: F811
     ) -> None:
         allocation_facade.schedule_project_allocations_demands(
             project_id=banking_soft_id, demands=demand_for_java_mid_in_jan
@@ -128,7 +125,7 @@ class TestPotentialTransferScenarios:
         fifteen_minutes_in_jan: TimeSlot,
         transfer_simulation_service: TransferSimulationService,
         allocation_facade: AllocationFacade,
-        allocatable_resource_factory: AllocatableResourceFactory,
+        allocatable_resource_factory: AllocatableResourceFactory,  # noqa: F811
     ) -> None:
         allocation_facade.schedule_project_allocations_demands(
             project_id=banking_soft_id, demands=demand_for_java_mid_in_jan
@@ -169,7 +166,7 @@ class TestPotentialTransferScenarios:
         jan_1: TimeSlot,
         transfer_simulation_service: TransferSimulationService,
         allocation_facade: AllocationFacade,
-        allocatable_resource_factory: AllocatableResourceFactory,
+        allocatable_resource_factory: AllocatableResourceFactory,  # noqa: F811
     ) -> None:
         allocation_facade.schedule_project_allocations_demands(
             project_id=banking_soft_id, demands=demand_for_java_mid_in_jan

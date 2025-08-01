@@ -17,7 +17,7 @@ class CapabilitiesAllocatedEvent:
     allocated_capability_id: UUID
     project_id: ProjectAllocationsId
     missing_demands: Demands
-    occurred_at: datetime
+    occurred_at: datetime = a.field(factory=utcnow)
     event_id: UUID = a.field(factory=uuid4, eq=False)
 
 
@@ -25,7 +25,7 @@ class CapabilitiesAllocatedEvent:
 class CapabilityReleasedEvent:
     project_id: ProjectAllocationsId
     missing_demands: Demands
-    occurred_at: datetime
+    occurred_at: datetime = a.field(factory=utcnow)
     event_id: UUID = a.field(factory=uuid4, eq=False)
 
 
@@ -41,5 +41,5 @@ class ProjectAllocationScheduledEvent:
 class ProjectAllocationsDemandsScheduledEvent:
     project_id: ProjectAllocationsId
     missing_demands: Demands
-    occurred_at: datetime
+    occurred_at: datetime = a.field(factory=utcnow)
     uuid: UUID = a.field(factory=uuid4)

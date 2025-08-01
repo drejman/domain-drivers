@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 from collections import defaultdict
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from datetime import datetime
 from typing import NamedTuple, cast
 
@@ -52,7 +52,7 @@ class ResourceAvailabilityReadModel:
         calendars = self.load_all({resource_id}, within)
         return calendars.get(resource_id)
 
-    def load_all(self, resource_ids: set[ResourceId], within: TimeSlot) -> Calendars:
+    def load_all(self, resource_ids: Iterable[ResourceId], within: TimeSlot) -> Calendars:
         calendars: dict[ResourceId, dict[Owner, list[TimeSlot]]] = defaultdict(lambda: defaultdict(list))
 
         stmt = self._stmt(resource_ids, within)
@@ -66,7 +66,7 @@ class ResourceAvailabilityReadModel:
 
         return Calendars({resource_id: Calendar(resource_id, calendar) for resource_id, calendar in calendars.items()})
 
-    def _stmt(self, resource_ids: set[ResourceId], within: TimeSlot) -> Select[ReadModelRow]:
+    def _stmt(self, resource_ids: Iterable[ResourceId], within: TimeSlot) -> Select[ReadModelRow]:
         availability_with_lag = (
             select(
                 availabilities.c.resource_id,
